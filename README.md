@@ -41,19 +41,21 @@ git clone https://github.com/Kvidi/Auktionssite.git
 ``` 
 2. Open the solution in Visual Studio 2022 (`Auctionsite.sln`)
 3. Restore NuGet packages.
-4. Copy the placeholder `appsettings.Template.json` to `appsettings.Development.json` (`appsettings.Development.json` is ignored by Git for security reasons). 
-	Then provide your own values for:
-	-**Database connection string**
-	-**Google Authentication:**
-		- `GoogleClientId`
-		- `GoogleClientSecret`
-	-**Email (SMTP) settings:**
-		- `SmtpServer`
-		- `SmtpPort`
-		- `SmtpUsername`
-		- `SmtpPassword`
-		- `SenderEmail`
-		- `SenderName`
+4. Copy the placeholder `appsettings.Template.json` to `appsettings.Development.json` (`appsettings.Development.json` is ignored by Git for security reasons`).  
+Then provide your own values for:
+
+- **Database connection string**
+- **Google Authentication:**
+  - `GoogleClientId`
+  - `GoogleClientSecret`
+- **Email (SMTP) settings:**
+  - `SmtpServer`
+  - `SmtpPort`
+  - `SmtpUsername`
+  - `SmtpPassword`
+  - `SenderEmail`
+  - `SenderName`
+
 
 5. Run the database migrations to set up the database schema.
    - Open the Package Manager Console in Visual Studio.
