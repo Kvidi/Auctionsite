@@ -1,0 +1,36 @@
+﻿@using Vega.Models.Database
+@model IEnumerable<Order>
+
+@{
+    ViewData["Title"] = "Beställningar";
+    var userEmail = ViewData["UserEmail"] as string;
+}
+
+<h2>Beställningar för: <em class="fs-3">@userEmail</em></h2>
+
+@if (!Model.Any())
+{
+    <p>Inga beställningar har lagts än.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Ordernummer</th>
+                <th>Datum</th>
+                <th>Summa</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Model)
+            {
+                <tr>
+                    <td>@order.Id</td>
+                    <td>@order.OrderDate.ToString("yyyy-MM-dd")</td>
+                    <td>@order.TotalPrice.ToString("c")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

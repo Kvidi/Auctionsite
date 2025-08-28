@@ -1,0 +1,97 @@
+﻿@using System.Net
+@using System.Text.RegularExpressions
+@using Auctionsite
+@using Auctionsite.Helpers
+@using Auctionsite.Models
+@using Auctionsite.Models.Database
+@using Microsoft.AspNetCore.Identity
+@model Auctionsite.Models.VM.ChatViewModel
+@{
+    ViewBag.CurrentUserId = Model.CurrentUserId;
+}
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Chatt";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Left pane: Conversation list -->
+        <div class="col-md-4 border-end" style="height: 80vh; overflow-y: auto;">
+            <h4 class="mt-3">Mina konversationer</h4>
+            <ul class="list-group">
+                @foreach (var chat in Model.AllChats)
+                {
+                    var otherUser = chat.CustomerId == Model.CurrentUserId ? chat.Advertiser : chat.Customer;
+                    var latestMessage = chat.Messages.OrderByDescending(m => m.SentAt).FirstOrDefault();
+
+                    // Check if the chat conversation has any unread messages for the current user
+                    bool hasUnread = chat.Messages.Any(m => !m.IsRead && m.SenderId != Model.CurrentUserId);
+
+                    string raw = latestMessage?.Content ?? "";
+                    string decoded = WebUtility.HtmlDecode(raw);
+                    string noTags = Regex.Replace(decoded, "<.*?>", "");
+                    string preview = noTags.Length > 50 ? noTags.Substring(0, 50) + "…" : noTags;
+
+                    <a asp-action="ViewChat" asp-route-chatId="@chat.Id" class="list-group-item list-group-item-action @(Model.SelectedChat?.Id == chat.Id ? "active" : "") position-relative chat-item" data-chat-id="@chat.Id">
+
+                        @* A blue dot is displayed if the user has any unread messages in the conversation *@
+                        @if (hasUnread)
+                        {
+                            <span class="chat-unread-dot"></span>
+                        }
+
+                        <div class="d-flex justify-content-between">
+                            <span>@otherUser.UserName</span>
+                            <span class="text-muted" style="white-space: nowrap;">
+                                @latestMessage?.SentAt.ToString("d MMM", new System.Globalization.CultureInfo("sv-SE"))
+                            </span>
+                        </div>
+
+                        <small class="text-muted">Ang. @chat.Advertisement.Title</small> <br />
+                        @preview
+                    </a>
+                }
+            </ul>
+        </div>
+
+        <!-- Right pane: Chat view -->
+        <div class="col-md-8 d-flex flex-column position-relative" style="height: 80vh;">
+            @if (Model.SelectedChat == null)
+            {
+                <div class="d-flex justify-content-center align-items-center h-100">
+                    <h5>Välj en konversation till vänster</h5>
+                </div>
+            }
+            else
+            {
+                <!-- Metadata for JavaScript -->
+                <div id="chat-metadata" data-current-user-id="@Model.CurrentUserId"></div>
+
+                <div id="chat-messages" class="flex-grow-1 overflow-auto p-3" style="background-color: #f5f5f5;">
+                    <!-- Floating "nytt meddelande" banner above chat messages -->
+                    <div id="chat-banner-anchor" class="w-100"></div>
+
+                    @foreach (var message in Model.SelectedChat.Messages.OrderBy(m => m.SentAt))
+                    {
+                        @await Html.PartialAsync("_ChatMessageBubblePartial", message)
+                    }
+                </div>
+               
+                <!-- Send message form -->
+                <form id="sendMessageForm" method="post" class="d-flex border-top p-2">
+                    <input type="hidden" id="chat-id" name="chatId" value="@Model.SelectedChat.Id" />
+                    <input type="text" id="message-input" name="content" class="form-control me-2" placeholder="Skriv ett meddelande..." autocomplete="off" />
+                    <button type="submit" class="btn btn-primary">Skicka</button>
+                </form>
+            }
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
+}

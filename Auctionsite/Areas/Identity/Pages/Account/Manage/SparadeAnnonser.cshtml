@@ -1,0 +1,79 @@
+﻿@page
+@model Auctionsite.Areas.Identity.Pages.Account.Manage.SparadeAnnonserModel
+@using Auctionsite.Areas.Identity
+@using Auctionsite.Areas.Identity.Pages
+@using Auctionsite.Areas.Identity.Pages.Account
+@using Auctionsite.Areas.Identity.Pages.Account.Manage
+@using Auctionsite.Models.Database
+@using Auctionsite.Models.VM
+@{
+    ViewData["Title"] = "Sparade Annonser";
+    var currentType = Model.AdType;
+    
+}
+
+<h4 class="mb-4"><strong>Sparade Annonser</strong></h4>
+
+<!-- Filter Buttons -->
+<div class="d-flex flex-wrap gap-2 mb-4">
+    <a class="btn btn-outline-dark @(currentType == null ? "active" : "")" asp-area="Identity" asp-page="/Account/Manage/SparadeAnnonser" asp-route-PageNumber="1">Alla</a>
+    <a class="btn btn-outline-dark @(currentType == AdType.Auction ? "active" : "")" asp-area="Identity" asp-page="/Account/Manage/SparadeAnnonser" asp-route-AdType="@AdType.Auction" asp-route-PageNumber="1">Auktion</a>
+    <a class="btn btn-outline-dark @(currentType == AdType.BuyNow ? "active" : "")" asp-area="Identity" asp-page="/Account/Manage/SparadeAnnonser" asp-route-AdType="@AdType.BuyNow" asp-route-PageNumber="1">Köp nu</a>
+    <a class="btn btn-outline-dark @(currentType == AdType.Both ? "active" : "")" asp-area="Identity" asp-page="/Account/Manage/SparadeAnnonser" asp-route-AdType="@AdType.Both" asp-route-PageNumber="1">Båda</a>
+</div>
+
+<!-- Ad List -->
+@if (!Model.FavouriteAds.Items.Any())
+{
+    <div class="text-muted">Du har inga sparade annonser.</div>
+}
+else
+{
+    <div class="row row-cols-5">
+        @foreach (var ad in Model.FavouriteAds.Items)
+        {
+            @await Html.PartialAsync("_AdCardPartial", ad)
+        }
+    </div>
+
+    <!-- Pagination -->
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(Model.FavouriteAds.PageNumber == 1 ? "disabled" : "")">
+                <a class="page-link"
+                   asp-area="Identity"
+                   asp-page="/Account/Manage/SparadeAnnonser"
+                   asp-route-PageNumber="@(Model.FavouriteAds.PageNumber - 1)"
+                   asp-route-AdType="@currentType">
+                    Föregående
+                </a>
+            </li>
+
+            @for (int i = 1; i <= Model.FavouriteAds.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.FavouriteAds.PageNumber ? "active" : "")">
+                    <a class="page-link"
+                       asp-area="Identity"
+                       asp-page="/Account/Manage/SparadeAnnonser"
+                       asp-route-AdType="@currentType"
+                       asp-route-PageNumber="@i">
+                        @i
+                    </a>
+                </li>
+            }
+
+            <li class="page-item @(Model.FavouriteAds.PageNumber >= Model.FavouriteAds.TotalPages ? "disabled" : "")">
+                <a class="page-link"
+                   asp-area="Identity"
+                   asp-page="/Account/Manage/SparadeAnnonser"
+                   asp-route-PageNumber="@(Model.FavouriteAds.PageNumber + 1)"
+                   asp-route-AdType="@currentType">
+                    Nästa
+                </a>
+            </li>
+        </ul>
+        <div class="text-center text-muted small mt-2">
+            Sida @Model.FavouriteAds.PageNumber av @Model.FavouriteAds.TotalPages
+        </div>
+    </nav>
+}

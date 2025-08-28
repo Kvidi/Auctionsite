@@ -1,0 +1,70 @@
+﻿@model IEnumerable<Auctionsite.Models.VM.CategoryGroupVM>
+@{
+   
+    ViewData["Title"] = "Bläddra bland kategorier";
+}
+
+
+
+<div class="container mt-4">
+    <h1 class="display-4 text-center mb-5">@ViewData["Title"]</h1>
+
+    <div class="row">
+        @foreach (var group in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm category-card">
+                    <div class="card-header bg-dark text-white">
+                        <h4 class="mb-0">
+                            <a asp-controller="Advertisement" asp-action="Index" asp-route-categoryId="@group.GroupId" class="text-white text-decoration-none">
+                                @group.GroupName
+                            </a>
+                        </h4>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        @foreach (var subcategory in group.SubCategories)
+                        {
+                            <li class="list-group-item">
+                                <a asp-controller="Advertisement" asp-action="Index" asp-route-categoryId="@subcategory.Value" class="subcategory-link">
+                                    @subcategory.Text
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+<style>
+    .category-card {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+    .category-card:hover {
+        transform: scale(1.03);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+    }
+
+    .subcategory-link {
+        /* This makes the link look like normal text */
+        text-decoration: none;
+        color: #212529; /* Standard dark text color */
+        display: block; /* Make the whole area clickable */
+        padding: 0.75rem 1.25rem; /* Match list-group-item padding */
+        transition: background-color 0.2s ease;
+    }
+
+    .subcategory-link:hover {
+        /* On hover, it looks interactive */
+        color: #000;
+        background-color: #f8f9fa; /* A light grey background on hover */
+    }
+
+    .list-group-item {
+        /* Remove default padding so our link can control it */
+        padding: 0;
+    }
+</style>

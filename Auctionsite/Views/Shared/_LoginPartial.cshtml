@@ -1,0 +1,115 @@
+﻿@using System.Security.Principal
+@using Auctionsite
+@using Auctionsite.Models
+
+<ul class="navbar-nav">
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <!--Notifications icon-->
+        <li class="nav-item me-3">
+            <a id="notification-icon"
+               class="nav-link text-dark d-flex align-items-center d-sm-inline-flex"
+               href="javascript:void(0);"
+               role="button">
+
+                <!-- Desktop icon -->
+                <i class="bi bi-bell-fill d-none d-sm-inline navbar-iconsize position-relative">
+                    <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"
+                          id="notification-dot-desktop"
+                          style="display: none;"></span>
+                </i>
+
+                <!-- Mobile icon -->
+                <i class="bi bi-bell d-sm-none navbar-iconsize me-2 position-relative">
+                    <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"
+                          id="notification-dot-mobile"
+                          style="display: none;"></span>
+                </i>
+
+                <!-- Mobile label -->
+                <span class="d-sm-none navbar-fontsize text-nowrap">Notiser</span>
+            </a>
+        </li>
+
+        <!--Chat icon-->
+        <li class="nav-item me-3">
+            <a id="chat-icon"
+               class="nav-link text-dark d-flex align-items-center d-sm-inline-flex"
+               asp-controller="Chat" asp-action="ViewChat"
+               role="button">
+
+                <!-- Desktop icon -->
+                <i class="bi bi-chat-dots-fill d-none d-sm-inline navbar-iconsize position-relative">
+                    <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"
+                          id="chat-dot-desktop"
+                          style="display: none;"></span>
+                </i>
+
+                <!-- Mobile icon -->
+                <i class="bi bi-chat-dots d-sm-none me-2 navbar-iconsize position-relative">
+                    <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"
+                          id="chat-dot-mobile"
+                          style="display: none;"></span>
+                </i>
+
+                <span class="d-sm-none text-nowrap">Meddelanden</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" href="/skapa-annons">
+                <i class="bi bi-pencil d-sm-none me-2 navbar-iconsize"></i><!--Mobile only-->
+                <span class="text-nowrap">Ny Annons</span>
+            </a>
+        </li>
+
+        <li class="dropdown">
+            <a class="nav-link text-dark d-flex align-items-center" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa fa-user-circle me-2 navbar-iconsize"></i> <!--Mobile only-->
+                <span class="text-nowrap">Mina sidor</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" id="user-menu" role="menu">
+                @if (User.IsInRole("Admin"))
+                {
+                    <li><a class="dropdown-item border-bottom py-3 fw-bold text-center">Admin</a></li>
+                    <li><a class="dropdown-item border-bottom d-flex align-items-center py-3" asp-controller="Admin" asp-action="Index"><i class="bi bi-speedometer me-3"></i>Dashboard</a></li>
+                    <li><a class="dropdown-item border-bottom d-flex align-items-center py-3" asp-area="Identity" asp-page="/Account/Manage/Dashboard"><i class="bi bi-grid-1x2 me-3"></i>Mina sidor</a></li>
+                    <li><a class="dropdown-item border-bottom d-flex align-items-center py-3"><i class="bi bi-bar-chart-line me-3"></i>Statistik</a></li>
+                }
+                else
+                {
+                    <li><a class="dropdown-item border-bottom py-3 fw-bold text-center">@User.Identity?.Name</a></li>
+                    <li><a class="dropdown-item border-bottom d-flex align-items-center py-3" asp-area="Identity" asp-page="/Account/Manage/Dashboard"><i class="bi bi-grid-1x2 me-3"></i>Översikt</a></li>
+                    <li><a class="dropdown-item border-bottom d-flex align-items-center py-3" asp-area="Identity" asp-page="/Account/Manage/Dashboard"><i class="bi bi-chat-dots me-3"></i>Chattar</a></li>
+                    <li><a class="dropdown-item border-bottom d-flex align-items-center py-3" asp-area="Identity" asp-page="/Account/Manage/MinaAnnonser"><i class="bi bi-star me-3"></i>Mina annonser</a></li>
+                    <li><a class="dropdown-item border-bottom d-flex align-items-center py-3" asp-area="Identity" asp-page="/Account/Manage/SparadeAnnonser"><i class="bi bi-heart me-3"></i>Sparade annonser</a></li>
+                    <li><a class="dropdown-item border-bottom d-flex align-items-center py-3" asp-area="Identity" asp-page="/Account/Manage/Dashboard"><i class="bi bi-bookmark-check me-3"></i>Bevakningar</a></li>
+                    <li><a class="dropdown-item border-bottom d-flex align-items-center py-3" asp-area="Identity" asp-page="/Account/Manage/SettingsList"><i class="bi bi-gear me-3"></i>Inställningar</a></li>
+                }
+                <li>
+                    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post">
+                        <button type="submit" class="dropdown-item py-3">
+                            <i class="bi bi-door-open me-3"></i>
+                            <span class="text-nowrap">Logga ut</span>
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </li>
+    }
+    else
+    {
+        var isIndex = Context.Request.Path;
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Identity" asp-route-returnUrl="@isIndex" asp-page="/Account/Register">
+                <i class="bi bi-person-plus d-sm-none me-2 navbar-iconsize"></i> <!--Mobile only-->
+                <span class="text-nowrap">Registrera</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Identity" asp-route-returnUrl="@isIndex" asp-page="/Account/Login">
+                <i class="bi bi-box-arrow-in-right d-sm-none me-2 navbar-iconsize"></i> <!--Mobile only-->
+                <span class="text-nowrap">Logga in</span>
+            </a>
+        </li>
+    }
+</ul>

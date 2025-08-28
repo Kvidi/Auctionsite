@@ -1,0 +1,65 @@
+﻿@model Auctionsite.Models.VM.HomeVM
+
+@{
+    ViewData["Title"] = "Startsida";
+}
+<div asp-validation-summary="All"
+     class="text-danger small"
+     role="alert"
+     aria-live="polite"
+     aria-atomic="true"
+     data-valmsg-replace="true">
+    @if (TempData.ContainsKey("TelephoneError"))
+    {
+        <span class="d-block">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            @TempData["TelephoneError"]
+        </span>
+    }
+</div>
+
+<div class="start-txt">
+    <h1 class="merienda">Välkommen till Fifty.</h1>
+    <p class="merienda">En handelsplats för alla.</p>
+    <form asp-controller="Advertisement" asp-action="Search" method="get" class="search-form">
+        <input type="text" name="searchTerm" placeholder="Sök auktioner..." class="search-input" />
+        <button type="submit" class="btn btn-primary">Sök</button>
+    </form>
+</div>
+<hr />
+<div class="start-txt merienda">
+    <h3><strong>Sista Chansen:</strong></h3>
+</div>
+<div class="start-container" id="lastChance">
+    @foreach (var ad in Model.LastChanceAds)
+    {
+        <div class="start-card">
+            <partial name="../Shared/_AdCardPartial.cshtml" model="ad"></partial>
+        </div>
+    }
+</div>
+
+<div class="start-txt merienda">
+    <h3><strong>Nya Auktioner:</strong></h3>
+</div>
+<div class="start-container" id="newAds">
+    @foreach (var ad in Model.NewAds)
+    {
+        <div class="start-card">
+            <partial name="../Shared/_AdCardPartial.cshtml" model="ad"></partial>
+        </div>
+    }
+</div>
+
+<div class="start-txt merienda">
+    <h3><strong>Populära Auktioner:</strong></h3>
+</div>
+<div class="start-container" id="popularAds">
+    @foreach (var ad in Model.PopularAds)
+    {
+        <div class="start-card">
+            <partial name="../Shared/_AdCardPartial.cshtml" model="ad"></partial>
+        </div>
+    }
+</div>
+<hr />

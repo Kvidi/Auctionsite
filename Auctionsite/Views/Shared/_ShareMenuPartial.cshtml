@@ -1,0 +1,39 @@
+﻿@{
+    var fullUrl = $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}{Context.Request.QueryString}";
+}
+
+<button id="openShareMenuBtn" class="btn btn-outline-secondary btn-sm mb-2 d-flex flex-fill align-items-center justify-content-center" aria-label="Dela annons meny">
+    <i class="bi bi-share me-2"></i><span class="d-none d-md-inline">Dela</span>
+</button>
+
+<div id="shareOverlay" class="share-overlay"></div>
+
+<div id="shareMenu" class="share-menu shadow-lg bg-white rounded-4 p-4">
+    <button type="button" class="btn-close position-absolute top-0 end-0 m-3" aria-label="Stäng meny" onclick="closeMenu()"></button>
+
+    <h5 class="text-center mb-4 fw-bold">Dela annons</h5>
+
+    <div class="icon-grid mb-4">
+        <button onclick="shareVia('facebook')" data-share="facebook" class="btn icon-btn"><i class="bi bi-facebook"></i></button>
+        <button onclick="shareVia('x')" data-share="x" class="btn icon-btn"><i class="bi bi-twitter-x"></i></button>
+        <button onclick="shareVia('whatsapp')" data-share="whatsapp" class="btn icon-btn"><i class="bi bi-whatsapp"></i></button>
+        <button onclick="shareVia('telegram')" data-share="telegram" class="btn icon-btn"><i class="bi bi-telegram"></i></button>
+        <button onclick="shareVia('email')" data-share="email" class="btn icon-btn"><i class="bi bi-envelope"></i></button>
+        <button onclick="shareVia('sms')" data-share="sms" class="btn icon-btn"><i class="bi bi-chat-dots"></i></button>
+        <button onclick="shareVia('messenger')" data-share="messenger" class="btn icon-btn"><i class="bi bi-messenger"></i></button>
+        <button onclick="shareVia('snapchat')" data-share="snapchat" class="btn icon-btn"><i class="bi bi-snapchat"></i></button>
+        <button onclick="shareVia('instagram')" data-share="instagram" class="btn icon-btn"><i class="bi bi-instagram"></i></button>
+    </div>
+
+    <hr />
+
+    <h6 class="mb-2 fw-bold">Länk till annonsen:</h6>
+    <div class="d-flex align-items-center mb-3">
+        <code class="flex-fill text-truncate me-2">@fullUrl</code>
+        <button class="btn btn-outline-secondary btn-sm" onclick="copyLink()">Kopiera</button>
+    </div>
+
+    <hr />
+
+    <button id="closeShareMenuBtn" class="btn btn-outline-danger w-100">Stäng</button>
+</div>

@@ -1,0 +1,63 @@
+﻿@using Auctionsite
+@using Auctionsite.Models
+@using Auctionsite.Models.Database
+@using Auctionsite.Models.VM
+@model IEnumerable<BidHistoryVM>
+
+<div class="modal-header">
+    <h5 class="modal-title">Budhistorik</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Stäng"></button>
+</div>
+<div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+    @if (Model != null && Model.Any())
+    {
+        <p class="mb-2">@(Model.Count() -1) bud – @(Model.Select(b => b.UserName).Distinct().Count() -1) budgivare</p>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Budgivare</th>
+                    <th>Bud</th>
+                    <th>Händelse</th>
+                    <th>Datum</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var bidList = Model.ToList();
+                }
+                @for (int i = 0; i < bidList.Count; i++)
+                {
+                    var bid = bidList[i];
+                    bool isStartPriceRow = (i == bidList.Count - 1); // last item is starting price
+                    var tdClass = isStartPriceRow ? "text-muted" : "";
+
+                    <tr>
+                        <td class="@tdClass">@bid.UserName</td>
+                        <td class="@tdClass">@bid.Amount.ToString("N0", new System.Globalization.CultureInfo("sv-SE")) kr</td>
+                        <td class="@tdClass">
+                            @{
+                                string readable = bid.EventType switch
+                                {
+                                    BidEventType.None => "",
+                                    BidEventType.ViaMaxBid => "Via maxbud",
+                                    BidEventType.MaxBidReached => "Maxbud uppnått",
+                                    BidEventType.MaxBidPlacedFirst => "Maxbudet lades först",
+                                    _ => bid.EventType.ToString()
+                                };
+                            }
+                            @readable
+                        </td>
+                        <td class="@tdClass">@bid.PlacedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>Inga bud har lagts på denna annons än.</p>
+    }
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-success" data-bs-dismiss="modal">Stäng</button>
+</div>

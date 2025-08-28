@@ -1,0 +1,93 @@
+﻿@using System.Text.RegularExpressions
+@using Auctionsite
+@using Auctionsite.Models
+@using Auctionsite.Models.VM
+@model List<NotificationVM>
+
+@*Frontend view component for the notifications sidebar*@
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="notificationSidebar" aria-labelledby="notificationSidebarLabel">
+    <div class="offcanvas-header border-bottom">
+        <h5 class="offcanvas-title mx-auto" id="notificationSidebarLabel">Aviseringar</h5>
+        <button type="button" class="btn-close text-reset mx-0" data-bs-dismiss="offcanvas" aria-label="Stäng"></button>
+    </div>
+    <div class="offcanvas-body">
+        @if (Model == null || !Model.Any())
+        {
+            <p class="text-muted">Inga aviseringar.</p>
+        }
+        else
+        {
+            <div class="list-group">
+                @foreach (var notification in Model)
+                {
+                    var isLinkedToAd = notification.AdvertisementId != null; // Check if the notification is linked to an advertisement and should link to its details page
+
+                    // Format the message to highlight quoted text
+                    var formattedMessage = Regex.Replace(notification.Message, "\"([^\"]+)\"", "<strong>$1</strong>");
+
+                    // Link to advertisement details or the SparadeAnnonser page, depending on whether the notification is for one advertisement or not
+                    <a href="@(isLinkedToAd
+                            ? Url.Action("Details", "Advertisement", new { id = notification.AdvertisementId })
+                            : Url.Content("~/Identity/Account/Manage/SparadeAnnonser"))"
+                    class="list-group-item list-group-item-action px-1 border-0">
+
+                        <div class="d-flex py-2 border-bottom">
+
+                            <!-- Dot + Image wrapper -->
+                            <div class="position-relative d-flex align-items-center me-2" style="width: 60px; height: 60px;">
+                                @if (!notification.IsRead)
+                                {
+                                    // Unread notification dot
+                                    <span class="notification-unread-dot bg-primary"
+                                          style="width: 10px; height: 10px; border-radius: 50%; position: absolute; left: -14px; top: 50%; transform: translateY(-50%);"></span>
+                                }
+
+                                @if (!isLinkedToAd)
+                                {
+                                    // Image for notification about several advertisements
+                                    <img src="/Images/Website/favorites-list.svg"
+                                         alt="Annonsbild"
+                                         class="rounded flex-shrink-0"
+                                         style="width: 60px; height: 60px; object-fit: cover;" />
+                                }
+                                else
+                                {
+                                    // Image for notification about a single advertisement
+                                    <img src="@notification.ImageUrl"
+                                         alt="Annonsbild"
+                                         class="rounded flex-shrink-0"
+                                         style="width: 60px; height: 60px; object-fit: cover;" />
+                                }
+                            </div>
+
+                            <!-- Message-->
+                            <div class="flex-grow-1 d-flex justify-content-between">
+                                <div class="pe-2">
+                                    <p class="mb-0 fw-normal truncate-notification-message">
+                                        @Html.Raw(formattedMessage)
+                                    </p>
+                                </div>
+
+                                <!-- Date and arrow -->
+                                <div class="notification-meta">
+                                    <span class="text-muted small">
+                                        @notification.CreatedAt.ToString("d MMM", new System.Globalization.CultureInfo("sv-SE"))
+                                    </span>
+
+                                    <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"
+                                         class="notification-arrow">
+                                        <path d="M9.1 7.9L4.1 3l1.5-1.4 6.3 6.3-6.3 6.5L4.1 13z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </a>
+                }
+
+            </div>
+        }
+    </div>
+</div>

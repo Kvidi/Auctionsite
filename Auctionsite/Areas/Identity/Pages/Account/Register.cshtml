@@ -1,0 +1,94 @@
+﻿@page
+@model RegisterModel
+@{
+    Layout = null;
+    ViewData["Title"] = "Registrera Dig";
+}
+
+<!doctype html>
+<html lang="sv-se">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewData["Title"] - Fifty</title>
+    <link rel="icon" type="image/png" href="~/Images/Website/ShadowedHeart50_nobg_hardest.png" />
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/signin.css" rel="stylesheet">
+</head>
+<body class="text-center">
+    <form method="post" asp-route-returnUrl="@Model.ReturnUrl" asp-page-handler="Back">
+        <input type="hidden" name="showLoginToast" id="showLoginToast" value="false" />
+        <button type="submit" class="btn btn-outline-dark top-left-button">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="24" height="24" viewBox="0 0 16 18">
+                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"></path>
+            </svg>
+        </button>
+    </form>
+    <main class="form-signin" id="main-form">
+        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            <img class="mb-4" src="~/Images/Website/ShadowedHeart50_nobg_hardest.png" alt="" width="65" height="60">
+            <h1 class="h3 mb-3 fw-normal">Skapa ett nytt konto</h1>
+            <hr />
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div class="form-floating mb-2">
+                <input asp-for="Input.FirstName" class="form-control" autocomplete="given-name" aria-required="true" title="Ange ditt förnamn."/>
+                <label asp-for="Input.FirstName">Förnamn</label>
+                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+            </div>
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div class="form-floating mb-2">
+                <input asp-for="Input.LastName" class="form-control" autocomplete="family-name" aria-required="true" title="Ange ditt efternamn."/>
+                <label asp-for="Input.LastName">Efternamn</label>
+                <span asp-validation-for="Input.LastName" class="text-danger"></span>
+            </div>
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div class="form-floating mb-2">
+                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" title="Ange din e-postadress."/>
+                <label asp-for="Input.Email">E-post</label>
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-2">
+                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" title="Välj ett lösenord."/>
+                <label asp-for="Input.Password">Lösenord</label>
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-2">
+                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" title="Upprepa ditt lösenord."/>
+                <label asp-for="Input.ConfirmPassword">Bekräfta Lösenord</label>
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-2">
+                <input asp-for="Input.Dob" class="form-control" autocomplete="bday" aria-required="true" title="Ange ditt födelsedatum."/>
+                <label asp-for="Input.Dob" class="form-label"></label>
+                <span asp-validation-for="Input.Dob" class="text-danger"></span>
+            </div>
+            <button type="submit" class="w-100 btn btn-lg btn-primary" id="registerSubmit">Registrera</button>
+        </form>
+@if (Model.ExternalLogins?.Count > 0)
+{
+            <hr class="my-4">
+            <div class="d-flex justify-content-center">
+                <hr class="my-4">
+                <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                    <div>
+                        <p>
+                            @foreach (var provider in Model.ExternalLogins)
+                            {
+                                <button type="submit" class="btn btn-light p-0 border-0" name="provider" value="@provider.Name" title="Logga in med @provider.DisplayName konto" style="background: none;">
+                                    <img src="~/Images/Google_Cloud_oAuth/web_light_sq_ctn.svg" alt="@provider.DisplayName" style="height:auto;width:auto;" />
+                                </button>
+                            }
+                        </p>
+                    </div>
+                </form>
+            </div>
+                }
+    </main>
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/js/site.js"></script>
+
+    @section Scripts {
+            <partial name="_ValidationScriptsPartial" />
+    }
+    </body>
+    </html>

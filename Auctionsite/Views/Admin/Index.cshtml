@@ -1,0 +1,13 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+    // Layout = "";
+}
+
+<h1><em><strong>Admin</strong></em></h1>
+<hr />
+<div class="d-grid gap-2 col-md-6">
+    <a asp-controller="Admin" asp-action="AllUsers" class="m-2 btn btn-outline-secondary rounded-end">Alla användare</a>    
+    <a asp-controller="Admin" asp-action="ApprovePendingAds" class="m-2 btn btn-outline-secondary rounded-end">Annonser som ska godkännas</a>
+    <a asp-controller="Admin" asp-action="" class="m-2 btn btn-outline-secondary rounded-end">Statistik</a>    
+    @* <a asp-controller="Admin" asp-action="" class="m-2 btn btn-outline-secondary rounded-end"></a> *@
+</div>

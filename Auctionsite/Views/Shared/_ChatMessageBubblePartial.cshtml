@@ -1,0 +1,52 @@
+﻿@using Auctionsite
+@using Auctionsite.Models
+@using Auctionsite.Models.Database
+@model Auctionsite.Models.Database.ChatMessage
+
+@{
+    var currentUserId = ViewBag.CurrentUserId as string;
+    var isOwnMessage = Model.SenderId == currentUserId;
+    var isUnreadFromOther = !Model.IsRead && !isOwnMessage;
+
+    // SentAt as ISO string for potential JavaScript usage
+    var sentAtIso = Model.SentAt.ToString("o"); // ISO 8601 format
+
+    // Prepare display values for time and date
+    var isToday = Model.SentAt.Date == DateTime.Today;
+    var isYesterday = Model.SentAt.Date == DateTime.Today.AddDays(-1);
+    var timePart = Model.SentAt.ToString("HH:mm");
+    var datePart = isToday ? "Idag" : isYesterday ? "Igår" : Model.SentAt.ToString("d MMM yyyy", System.Globalization.CultureInfo.GetCultureInfo("sv-SE"));
+
+    // Show read receipt text only if this is the user's own message and it has been read
+    var readReceiptText = isOwnMessage && Model.IsRead ? " ✅ Öppnat" : "";
+}
+
+<div class="d-flex @(isOwnMessage ? "justify-content-end" : "justify-content-start") mb-2">
+    <div class="d-flex flex-column align-items-start" style="width: 70%;">
+        <div class="fw-bold text-muted mb-1 text-start" style="width: 100%;">
+            @Model.Sender.UserName
+        </div>
+        <div class="chat-bubble p-2 rounded @(isUnreadFromOther ? "unread" : "")"
+             style="width: 100%; background-color: @(isOwnMessage ? "#DCF8C6" : "#E4E6EB");"
+             data-message-id="@Model.Id"
+             data-chat-id="@Model.ChatId"
+             data-sender-id="@Model.SenderId"
+             data-sent-at="@sentAtIso"
+             data-is-own-message="@(isOwnMessage.ToString().ToLower())"
+             data-is-read="@(Model.IsRead.ToString().ToLower())">
+
+            <div class="message-content text-start">@Html.Raw(Model.Content)</div>
+        </div>
+
+        <div class="message-meta text-muted small mt-1 text-start" style="width: 100%;">
+            @datePart @timePart@readReceiptText
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+

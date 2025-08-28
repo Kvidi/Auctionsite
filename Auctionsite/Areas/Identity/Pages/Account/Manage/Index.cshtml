@@ -1,0 +1,98 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Din profil";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+}
+
+<partial name="_StatusMessage" for="StatusMessage" />
+
+<!-- 🔙 Back Button Row -->
+<div class="col-md-6 mb-3 text-start">
+    <a asp-page="/Account/Manage/SettingsList" class="btn btn-custom-RoseWineBase">
+        <i class="fa fa-arrow-left me-1"></i> Back
+    </a>
+</div>
+
+<div class="align-content-center col-md-8 mx-auto">
+    <h3 class="text-center form-title-Nav-Pages">@ViewData["Title"]</h3>
+
+    <div class="form-container-Nav-Pages">
+        <form id="profile-form" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger-Nav-Pages" role="alert"></div>
+
+            <div class="form-floating-Nav-Pages mb-3">
+                <label asp-for="Input.FirstName" class="form-label"></label>
+                <input asp-for="Input.FirstName" class="form-control" placeholder="Ange ditt förnamn." />
+                <span asp-validation-for="Input.FirstName" class="text-danger-Nav-Pages"></span>
+            </div>
+
+            <div class="form-floating-Nav-Pages mb-3">
+                <label asp-for="Input.LastName" class="form-label"></label>
+                <input asp-for="Input.LastName" class="form-control" placeholder="Ange ditt efternamn." />
+                <span asp-validation-for="Input.LastName" class="text-danger-Nav-Pages"></span>
+            </div>
+
+            <div class="form-floating-Nav-Pages mb-3">
+                <label asp-for="Input.OrgNr" class="form-label"></label>
+                <input asp-for="Input.OrgNr" class="form-control" placeholder="Ange ditt organisationsnummer (valfritt)." />
+                <span asp-validation-for="Input.OrgNr" class="text-danger-Nav-Pages"></span>
+            </div>
+
+            <div class="form-floating-Nav-Pages mb-3">
+                <label asp-for="Input.DeliveryStreet" class="form-label"></label>
+                <input asp-for="Input.DeliveryStreet" class="form-control" placeholder="Ange leveransadress." />
+                <span asp-validation-for="Input.DeliveryStreet" class="text-danger-Nav-Pages"></span>
+            </div>
+
+            <div class="form-floating-Nav-Pages mb-3">
+                <label asp-for="Input.DeliveryZip" class="form-label"></label>
+                <input asp-for="Input.DeliveryZip" class="form-control" placeholder="Ange postnummer för leverans." />
+                <span asp-validation-for="Input.DeliveryZip" class="text-danger-Nav-Pages"></span>
+            </div>
+
+            <div class="form-floating-Nav-Pages mb-3">
+                <label asp-for="Input.DeliveryCity" class="form-label"></label>
+                <input asp-for="Input.DeliveryCity" class="form-control" placeholder="Ange stad för leverans." />
+                <span asp-validation-for="Input.DeliveryCity" class="text-danger-Nav-Pages"></span>
+            </div>
+
+            <div class="form-floating-Nav-Pages mb-3">
+                <label asp-for="Input.BillingStreet" class="form-label"></label>
+                <input asp-for="Input.BillingStreet" class="form-control" placeholder="Ange bostadsadress." />
+                <span asp-validation-for="Input.BillingStreet" class="text-danger-Nav-Pages"></span>
+            </div>
+
+            <div class="form-floating-Nav-Pages mb-3">
+                <label asp-for="Input.BillingZip" class="form-label"></label>
+                <input asp-for="Input.BillingZip" class="form-control" placeholder="ange ditt postnummer." />
+                <span asp-validation-for="Input.BillingZip" class="text-danger-Nav-Pages"></span>
+            </div>
+
+            <div class="form-floating-Nav-Pages mb-3">
+                <label asp-for="Input.BillingCity" class="form-label"></label>
+                <input asp-for="Input.BillingCity" class="form-control" placeholder="Ange stad." />
+                <span asp-validation-for="Input.BillingCity" class="text-danger-Nav-Pages"></span>
+            </div>
+
+            <div class="form-floating-Nav-Pages mb-3">
+                <label asp-for="Username" class="form-label"></label>
+                <input asp-for="Username" class="form-control" disabled />
+            </div>
+            <div class="form-floating-Nav-Pages mb-3">
+                <label asp-for="Input.PhoneNumber" class="form-label"></label>
+                <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Vänligen ange ditt telefonnummer" />
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger-Nav-Pages"></span>
+            </div>
+            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-custom-RoseWineBase">Spara</button>
+        </form>
+    </div>
+</div>
+
+<style>
+  
+
+</style>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

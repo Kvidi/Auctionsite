@@ -1,0 +1,28 @@
+﻿@using Auctionsite
+@using Auctionsite.Models
+@using Auctionsite.Models.Database
+@model IEnumerable<User>
+
+@{
+    ViewData["Title"] = "Alla användare";
+}
+
+<h2>Alla användare</h2>
+
+<table>
+    <thead>
+        <tr><th>E-post</th><th>Åtgärder</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>
+                    <a asp-action="UserDetails" asp-route-id="@user.Id">Visa detaljer</a> |
+                    <a asp-action="OrdersByUser" asp-route-id="@user.Id">Beställningar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

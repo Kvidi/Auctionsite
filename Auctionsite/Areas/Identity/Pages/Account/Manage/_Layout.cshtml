@@ -1,0 +1,52 @@
+﻿@{
+    if (ViewData.TryGetValue("ParentLayout", out var parentLayout) && parentLayout != null)
+    {
+        Layout = parentLayout.ToString();
+    }
+    else
+    {
+        Layout = "/Areas/Identity/Pages/_Layout.cshtml";
+    }
+}
+<div class="container py-4">
+    <!-- Profile Header -->
+    <div class="d-flex align-items-center gap-3 mb-4">
+        <div class="profile-avatar bg-light rounded-circle d-flex justify-content-center align-items-center" style="width: 64px; height: 64px;">
+            <i class="fa fa-user fa-2x text-secondary"></i>
+        </div>
+        <div>
+            <h4 class="mb-0 fw-semibold">@User.Identity?.Name</h4>
+            <div class="text-success small">
+                <i class="fa fa-check-circle"></i> Verifierad
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Buttons -->
+    <div class="mb-4 d-flex flex-wrap justify-content-between align-items-center">
+        <!-- Left group -->
+        <div class="d-flex gap-2">
+            <button class="btn btn-dark">Redigera profil</button>
+            <button class="btn btn-outline-secondary">Via publik profil</button>
+        </div>
+
+        <!-- Right button -->
+        <a class="btn btn-custom-RoseWineBase-sm-responsive"
+           asp-area="Identity"
+           asp-page="/Account/Manage/Dashboard">
+            Mina Sidor
+        </a>
+
+    </div>
+
+    <hr />
+
+    <div class="row g-3">
+        @RenderBody()
+    </div>
+
+</div>
+
+@section Scripts {
+    @RenderSection("Scripts", required: false)
+}

@@ -1,0 +1,101 @@
+﻿@page
+@model EmailModel
+@{
+    ViewData["Title"] = "Hantera e-postadress";
+    ViewData["ActivePage"] = ManageNavPages.Email;
+}
+
+  <partial name="_StatusMessage" for="StatusMessage" />
+<!-- 🔙 Back Button Row -->
+<div class="col-md-6 mb-3 text-start">
+    <a asp-page="/Account/Manage/SettingsList" class="btn btn-custom-RoseWineBase">
+        <i class="fa fa-arrow-left me-1"></i> Back
+    </a>
+</div>
+
+ <div class="row justify-content-center">
+   <h3 class="text-center form-title-Nav-Pages">@ViewData["Title"]</h3>
+
+    <div class="col-md-6 email-form-container">
+        <form id="email-form" method="post">
+            <div asp-validation-summary="All" class="text-danger" role="alert"></div>
+
+            @if (Model.IsEmailConfirmed)
+            {
+                <div class="form-floating mb-3 input-group">
+                    <input asp-for="Email" class="form-control" placeholder="Vänligen ange din e-postadress." disabled />
+                        <div class="input-group-append">
+                            <span class="h-100 input-group-text text-success font-weight-bold">✓</span>
+                        </div>
+                    <label asp-for="Email" class="form-label"></label>
+                </div>
+            }
+            else
+            {
+                <div class="form-floating mb-3">
+                    <input asp-for="Email" class="form-control" placeholder="Vänligen ange din e-postadress." disabled />
+                    <label asp-for="Email" class="form-label"></label>
+                    <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="btn btn-link">Skicka verifieringsmejl</button>
+                </div>
+            }
+
+            <div class="form-floating mb-3">
+                <input asp-for="Input.NewEmail" class="form-control" autocomplete="email" aria-required="true" placeholder="Vänligen ange en ny e-postadress." />
+                <label asp-for="Input.NewEmail" class="form-label"></label>
+                <span asp-validation-for="Input.NewEmail" class="text-danger"></span>
+            </div>
+            <button id="change-email-button" type="submit" asp-page-handler="ChangeEmail" class="w-100 btn btn-lg btn-custom-RoseWineBase">Byt e-postadress</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+<style>
+    .email-form-container {
+        background: #fff; /* pure white for modern contrast */
+        padding: 24px;
+        border-radius: 12px;
+        border: 1px solid #e8e0e3; /* soft border instead of shadow */
+    }
+
+    .form-floating .form-control {
+        border-radius: 6px;
+        border: 1px solid #d8cfd2;
+        background-color: #fdfcfd;
+        font-size: 15px;
+        padding: 12px;
+        transition: border-color 0.3s ease, box-shadow 0.2s ease;
+    }
+
+    .form-floating .form-control:focus {
+        border-color: #8e3a59;
+        box-shadow: 0 0 0 2px rgba(142, 58, 89, 0.1);
+        background-color: #fff;
+    }
+
+    .form-floating label {
+        font-weight: 500;
+        color: #5f4c50;
+        font-size: 14px;
+    }
+
+    .text-danger {
+        font-size: 13px;
+        color: #b33f5a;
+    }
+
+
+    .input-group-text.text-success {
+        background: #f1eaed;
+        color: #8e3a59;
+        border: none;
+        font-weight: 500;
+        font-size: 14px;
+    }
+
+
+
+</style>

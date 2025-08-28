@@ -1,0 +1,551 @@
+﻿@model Auctionsite.Models.VM.AdDetailsVM
+@using Auctionsite
+@using Auctionsite.Extensions
+@using Auctionsite.Models
+@using Auctionsite.Models.Database
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Annonsdetaljer";
+}
+
+<div class="container-fluid ad-wrapper ad-details-container">
+    <!-- Breadcrumbs -->
+    <nav class="ad-breadcrumbs mb-4" aria-label="Kategorisökväg">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a asp-controller="Advertisement" asp-action="Index">Alla annonser</a>
+            </li>
+            @if (Model.Breadcrumbs != null && Model.Breadcrumbs.Any())
+            {
+                @for (int i = 0; i < Model.Breadcrumbs.Count; i++)
+                {
+                    var crumb = Model.Breadcrumbs[i];
+                    var isLast = (i == Model.Breadcrumbs.Count - 1);
+                    <li class="breadcrumb-item @(isLast ? "active" : "")" @(isLast ? "aria-current=\"page\"" : "")>
+                        @if (!isLast)
+                        {
+                            <a asp-controller="Advertisement" asp-action="Index" asp-route-categoryId="@crumb.Id">@crumb.Name</a>
+                        }
+                        else
+                        {
+                            @crumb.Name
+                        }
+                    </li>
+                }
+            }
+        </ol>
+    </nav>
+
+    @if (Model.ApprovedAt == null && Model.IsRejected)
+    {
+        <div class="alert alert-danger col-md-8 col-12 d-flex justify-content-center align-items-center">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <strong class="me-1">Observera:</strong> Den här annonsen är avvisad, redigera gärna och skicka in den igen.
+            <!-- Edit button -->
+            <a class="btn btn-sm btn-outline-dark ms-4" asp-controller="Advertisement" asp-action="EditAd" asp-route-id="@Model.Id">
+                Redigera
+            </a>
+        </div>
+    }
+    else if (Model.ApprovedAt == null && !Model.IsRejected)
+    {
+        <div class="alert alert-warning col-md-8 col-12 d-flex justify-content-center align-items-center">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <strong class="me-1">Observera:</strong> Den här annonsen är ännu inte granskad utav en administratör.
+        </div>
+    }
+
+    <!-- CONTENT ROW -->
+    <div class="row">
+        <!-- LEFT COLUMN: MEDIA + DESCRIPTION + META -->
+        <div class="col-md-8 col-12">
+            <!-- MEDIA -->
+            <div class="d-flex align-items-center justify-content-center position-relative">
+                <!-- Thumbnails -->
+                <div class="d-flex flex-column gap-2 mt-3 me-3 thumbnail-list">
+                    @{
+                        var images = Model.Images
+                            .Where(i => i.Url != Model.HeadImageURL)
+                            .OrderBy(i => i.Order)
+                            .ToList();
+                        int index = 0;
+                    }
+                    @if (!string.IsNullOrEmpty(Model.HeadImageURL))
+                    {
+                        <button type="button" class="thumbnail-btn active mb-2" data-index="@(index++)">
+                            <img src="@Model.HeadImageURL" class="img-thumbnail" alt="Huvudbild" />
+                        </button>
+                    }
+                    @foreach (var img in images)
+                    {
+                        <button type="button" class="thumbnail-btn mb-2" data-index="@(index++)">
+                            <img src="@img.Url" class="img-thumbnail" alt="Annonsbild" />
+                        </button>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.VideoURL))
+                    {
+                        <button type="button" class="thumbnail-btn video-thumb mt-auto" data-index="@(index)">
+                            <i class="bi bi-play-circle-fill"></i>
+                        </button>
+                    }
+                </div>
+                <!-- Carousel -->
+                <div class="flex-fill">
+                    <div id="adCarousel" class="carousel slide ad-carousel rounded-0" data-bs-ride="false">
+                        <div class="carousel-inner">
+                            @{
+                                int idx = 0;
+                                if (!string.IsNullOrEmpty(Model.HeadImageURL))
+                                {
+                                    <div class="carousel-item active">
+                                        <img src="@Model.HeadImageURL" class="d-block w-100" alt="" />
+                                    </div>
+                                    ;
+                                    idx++;
+                                }
+                                foreach (var img in images)
+                                {
+                                    <div class="carousel-item @(idx==0?"active":"")">
+                                        <img src="@img.Url" class="d-block w-100" alt="" />
+                                    </div>
+                                    ;
+                                    idx++;
+                                }
+                                if (!string.IsNullOrEmpty(Model.VideoURL))
+                                {
+                                    <div class="carousel-item @(idx==0?"active":"") position-relative">
+                                        <div class="video-overlay d-flex align-items-center justify-content-center">
+                                            <div class="spinner-border text-light" role="status"></div>
+                                        </div>
+                                        <video controls class="d-block w-100">
+                                            <source src="@Model.VideoURL" type="video/mp4" />
+                                        </video>
+                                    </div>
+                                    ;
+                                }
+                            }
+                        </div>
+                        @{
+                            int mediaCount = (string.IsNullOrEmpty(Model.HeadImageURL) ? 0 : 1) + images.Count + (string.IsNullOrEmpty(Model.VideoURL) ? 0 : 1);
+                        }
+                        @if (mediaCount > 1)
+                        {
+                            <button class="carousel-control-prev" type="button" data-bs-target="#adCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon"></span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#adCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon"></span>
+                            </button>
+                        }
+                    </div>
+                </div>
+            </div>
+            <!-- Description titel and Condition -->
+            <div class="col-md-12 mt-4">
+                <h5 class="d-flex align-items-center m-0"><i class="bi bi-card-text me-2"></i>Beskrivning</h5>
+                <!-- Conditions badge -->
+                @{
+                    // Determine color based on condition
+                    string conditionBg = Model.Condition switch
+                    {
+                        Condition.UnUsed => "bg-success",               // Oanvänd → Green
+                        Condition.LikeNew => "bg-success",               // Nyskick → Green
+                        Condition.Good => "bg-warning text-dark",     // Gott skick → Yellow + Dark text
+                        Condition.WellUsed => "bg-warning text-dark",     // Välanvänd → Yellow + Dark text
+                        Condition.Defect => "bg-danger",                // Defekt → Red
+                        _ => "bg-secondary"              // Fallback
+                    };
+                }
+                <span class="badge @conditionBg d-inline-block w-auto rounded-0">@Model.Condition.GetDisplayName()</span>
+            </div>
+            <!-- Description -->            
+            <div class="col-md-12 py-2 mb-3 border-bottom" style="min-height:7.5rem; overflow-wrap:break-word;">
+                <p class="mb-0 text-break">@(string.IsNullOrWhiteSpace(Model.Description) ? "Ingen beskrivning än" : Model.Description)</p>
+            </div>
+            
+            <!-- Meta Details -->
+            <div class="col-md-6">
+                @{
+                    var catpath = Model.Breadcrumbs?.Select(b => b.Name) ?? new[] { "Ej angiven" };
+                    var categoryPath = string.Join(" > ", catpath);
+                }
+                <p class="d-flex align-items-center"><i class="bi bi-tags me-2"></i>Kategori: @categoryPath</p>
+                <p class="d-flex align-items-center"><i class="bi bi-geo-alt me-2"></i>Plats: @Model.PickupLocation</p>
+                <p class="d-flex align-items-center"><i class="bi bi-calendar3 me-2"></i>Inlagd: @Model.AddedAt.ToShortDateString()</p>
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN: FAVORIT/SHARE, TITLE, PRICE, ACCORDION, SELLER INFO, PROTECTION -->
+        <div class="col-md-3 col-12 mx-auto position-relative">
+            <!-- Toast Container -->
+            <div id="ad-toast-container" style="position: absolute; top: -50px; right: 0; width: 100%; z-index: 2000;"></div>
+
+            <!-- Title -->
+            <h4 class="mb-3 title">@Model.Title</h4>
+
+            <!--End date and countdown timer, set by JS-->
+            <div class="countdown" data-end="@Model.AuctionEndDate" data-context="detail" data-is-ended="@Model.IsEnded">
+                <span class="countdown-date"></span>
+                <span class="countdown-separator"> • </span> 
+                <span class="countdown-timer"></span>
+            </div>
+
+            <!-- Price card -->
+            <div class="card bg-light rounded-0 mb-4">
+                <div class="card-body">
+                    @* The Auction ended without any bids or getting bought *@
+                    @if (Model.IsEnded && Model.AdType != AdType.BuyNow && Model.BidCount == 0 && !Model.WasBought)
+                    {
+                        <div class="mb-2 text-center">
+                            <div>Auktionstiden har gått ut</div>
+                        </div>
+                    }
+                    else
+                    {
+                        @* Sold via Buy-now *@
+                        @if (Model.WasBought)
+                        {
+                            <div class="mb-2 text-center">
+                                <div>Såld för:</div>
+                                <div class="fs-4"><strong>@Model.BuyNowPrice.Value.ToString("N0") kr</strong></div>
+                            </div>
+                        }
+                        @* The Auction is ended with bids but without Buy-now *@
+                        else if (Model.IsEnded && Model.BidCount > 0 && !Model.WasBought)
+                        {
+                            <div class="mb-2 text-center">
+                                <div>Auktionen är avslutad</div>
+                            </div>
+                            <div class="mb-2 text-center">
+                                <div>Slutpris:</div>
+                                <div class="fs-4"><strong>@Model.CurrentHighestBid.ToString("N0") kr</strong></div>
+                            </div>
+                        }
+                        @* Auction only *@
+                        else if (Model.AdType == AdType.Auction)
+                        {
+                            <div class="mb-2 text-center">
+                                <div>
+                                    @(Model.CurrentHighestBid > 0 ? "Ledande bud" : "Utropspris") – 
+                                    <a href="#" class="show-bid-history" data-adid="@Model.Id"> 
+                                        <span id="bid-count">@Model.BidCount</span> bud 
+                                    </a>
+                                </div>
+                                <div class="fs-4">
+                                    <strong id="auctionLeadingBid">
+                                        @(Model.CurrentHighestBid > 0
+                                            ? Model.CurrentHighestBid.ToString("N0")
+                                            : (Model.StartingPrice ?? 0m).ToString("N0")) kr
+                                    </strong>
+                                </div>
+                            </div>
+                        }
+                        @* Buy-now only *@
+                        else if (Model.AdType == AdType.BuyNow)
+                        {
+                            <div class="mb-2 text-center">
+                                <div>Köp nu:</div>
+                                <div class="fs-4"><strong>@Model.BuyNowPrice.Value.ToString("N0") kr</strong></div>
+                            </div>
+                        }
+                        @* Both *@
+                        else if (Model.AdType == AdType.Both)
+                        {
+                            @if (Model.CurrentHighestBid == 0 || Model.CurrentHighestBid <= Model.BuyNowPrice)
+                            {
+                                <div class="mb-2 text-center">
+                                    <div>
+                                        @(Model.CurrentHighestBid > 0 ? "Ledande bud" : "Utropspris") –
+                                        <a href="#" class="show-bid-history" data-adid="@Model.Id">
+                                            <span id="bid-count">@Model.BidCount</span> bud
+                                        </a>
+                                    </div>
+                                    <div class="fs-4">
+                                        <strong id="auctionLeadingBid">
+                                            @(Model.CurrentHighestBid > 0
+                                                ? Model.CurrentHighestBid.ToString("N0")
+                                                : (Model.StartingPrice ?? 0m).ToString("N0")) kr
+                                        </strong>
+                                    </div>
+                                </div>
+                                <div class="mb-2 text-center">
+                                    <div>Köp nu:</div>
+                                    <div class="fs-4"><strong>@Model.BuyNowPrice.Value.ToString("N0") kr</strong></div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="mb-2 text-center">
+                                    <div>Ledande bud – @Model.BidCount bud</div>
+                                    <div class="fs-4"><strong>@Model.CurrentHighestBid.ToString("N0") kr</strong></div>
+                                </div>
+                            }
+                        }
+                    }
+
+                    @* Show leading bidder status *@
+                    <div id="bid-leading-status" class="mt-3 fw-semibold">
+                        @if(Model.IsLeadingBidder)
+                        {
+                            <div class="fw-semibold">Du har högsta budet!</div>
+
+                            @if (Model.LeadingMaxbid > Model.CurrentHighestBid)
+                            {
+                                <div class="text-muted small">
+                                    Nya bud läggs automatiskt åt dig upp till @Model.LeadingMaxbid.ToString("N0") kr
+                                </div>
+                            }
+                        }
+                        @if (Model.IsOutbid)
+                        {
+                            <div class="text-danger fw-semibold">Du har blivit överbjuden</div>
+                            <div class="text-muted small">
+                                @Model.LeadingBidderUserName leder med ett bud på @Model.CurrentHighestBid.ToString("N0") kr
+                            </div>                
+                        }
+                    </div>
+
+                 @* Action buttons *@
+                    <div class="d-flex flex-column gap-2 mt-3 action-buttons">
+                        @* Place bid *@
+                        @if ((Model.AdType == AdType.Auction || Model.AdType == AdType.Both)
+                        && !Model.IsEnded
+                        && !Model.WasBought)
+                        {
+                            <button id="bidModalBtn" class="btn btn-dark btn-sm w-100 fw-bold d-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#bidModal">
+
+                                <i class="bi bi-cash-stack me-2"></i>
+
+                                <span id="bidModalBtnText">
+                                    @if (Model.IsLeadingBidder)
+                                    {
+                                        <text>Ändra maxbud</text>
+                                    }
+                                    else
+                                    {
+                                        <text>Lägg bud</text>
+                                    }
+                                </span>
+                            </button>
+                        }
+
+                        @* Buy now *@
+                        @if ((Model.AdType == AdType.BuyNow || Model.AdType == AdType.Both)
+                        && !Model.IsEnded
+                        && !Model.WasBought
+                        && (Model.CurrentHighestBid == 0 || Model.CurrentHighestBid < Model.BuyNowPrice))
+                        {
+                            <button class="btn btn-primary btn-sm w-100 fw-bold d-flex align-items-center justify-content-center">
+                                <i class="bi bi-cart-fill me-2"></i>Köp nu
+                            </button>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Favorite/Share -->
+            <div class="d-flex gap-2 px-3 mb-4">
+                <!-- Favorite button -->
+                <button class="btn btn-outline-danger btn-sm mb-2 me-2 d-flex flex-fill align-items-center justify-content-center favourite-toggle @(Model.IsFavourite ? "favourited" : "")" data-ad-id="@Model.Id" aria-label="Spara som favorit">
+                    <i class="bi bi-heart me-2 icon-outline"></i>
+                    <i class="bi bi-heart-fill me-2 icon-filled"></i>
+                    Favorit
+                </button>
+                <!-- Share Menu -->
+                <partial name="_ShareMenuPartial" />
+            </div>
+            <!-- Accordion -->
+            <div class="accordion mb-4" id="adOptions">
+                <!-- Shipping -->
+                <div class="accordion-item mb-2">
+                    <h2 class="accordion-header" id="headingShipping">
+                        <button class="accordion-button collapsed text-break d-flex align-items-center" type="button" data-bs-toggle="collapse" data-bs-target="#shipping">
+                            <i class="bi bi-truck me-2"></i>Frakt
+                        </button>
+                    </h2>
+                    <div id="shipping" class="accordion-collapse collapse" data-bs-parent="#adOptions">
+                        <div class="accordion-body text-break">
+                            <p class="mb-2"><strong>Metod:</strong> @(Model.ShippingMethod ?? "Ej specificerat")</p>
+                            <p><strong>Kostnad:</strong> @(Model.ShippingCost.HasValue ? Model.ShippingCost.Value.ToString("C") : "Kontakta säljaren")</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Payment -->
+                <div class="accordion-item mb-2">
+                    <h2 class="accordion-header" id="headingPayment">
+                        <button class="accordion-button collapsed text-break d-flex align-items-center" type="button" data-bs-toggle="collapse" data-bs-target="#payment">
+                            <i class="bi bi-credit-card me-2"></i>Betalningsmetoder
+                        </button>
+                    </h2>
+                    <div id="payment" class="accordion-collapse collapse" data-bs-parent="#adOptions">
+                        <div class="accordion-body text-break">
+                            @if (Model.PaymentMethods?.Any() == true)
+                            {
+                                <ul class="list-unstyled mb-0">
+                                    @foreach (var pm in Model.PaymentMethods)
+                                    {
+                                        <li>@pm</li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                <p class="mb-0">Inga betalningsmetoder specificerade.</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <!-- Pickup -->
+                <div class="accordion-item mb-2">
+                    <h2 class="accordion-header" id="headingPickup">
+                        <button class="accordion-button collapsed text-break d-flex align-items-center" type="button" data-bs-toggle="collapse" data-bs-target="#pickup">
+                            <i class="bi bi-box-seam me-2"></i>Avhämtning
+                        </button>
+                    </h2>
+                    <div id="pickup" class="accordion-collapse collapse" data-bs-parent="#adOptions">
+                        <div class="accordion-body text-break">
+                            @if (Model.AvailableForPickup)
+                            {
+                                <p class="mb-0"><i class="bi bi-check-circle text-success me-2"></i>Avhämtning: @Model.PickupLocation</p>
+                            }
+                            else
+                            {
+                                <p class="mb-0"><i class="bi bi-x-circle text-danger me-2"></i>Ej tillgänglig för avhämtning</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- SELLER INFO + PROTECTION -->            
+            <div class="col-md-12">
+                <!-- Seller Info Card -->
+                <div class="card bg-light rounded-0  mb-4">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="d-flex align-items-center"><i class="bi bi-person-circle me-2"></i>Säljes av:</h6>
+                            <span class="badge @(Model.IsCompanySeller?"bg-primary":"bg-secondary")">@(Model.IsCompanySeller ? "Företag" : "Privatperson")</span>
+                            <p class="mt-2 mb-0">@Model.UserName</p>
+                            <a class="btn btn-outline-secondary btn-sm d-flex align-items-center" id="contactSellerBtn" data-advertisement-id=@Model.Id><i class="bi bi-chat-dots me-2"></i>Kontakta säljaren</a>
+                        </div>
+                        
+                    </div>
+                </div>
+                <!-- Purchase Protection -->
+                <div class="bg-info-subtle border border-info-subtle rounded p-3 text-center">
+                    <i class="bi bi-shield-check me-2"></i>Köp nu med köpskydd via Rocker Pay
+                </div>
+            </div>            
+        </div>
+    </div>
+</div>
+
+<!-- Modal popup for first message to seller -->
+<div id="chatModal" class="modal" tabindex="-1" style="display:none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="firstMessageForm">
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title">Skicka meddelande</h5>
+                    <button type="button" class="btn-close" onclick="closeModal()" aria-label="Stäng"></button>
+                </div>
+                <div class="modal-body">
+                    <label for="messageInput" class="form-label">Ditt meddelande:</label>
+                    <textarea name="content" id="messageInput" class="form-control" required></textarea>
+                    <input type="hidden" id="hiddenAdId" name="advertisementId" value=@Model.Id />
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Skicka</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal for bid history -->
+<div class="modal fade" id="bidHistoryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content" id="bidHistoryModalContent">
+            <!-- Partial view loads here via Ajax -->
+        </div>
+    </div>
+</div>
+
+<!-- Modal for placing bids-->
+<div class="modal fade" id="bidModal" tabindex="-1" aria-labelledby="bidModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content rounded-3 shadow">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title" id="bidModalLabel">Lägg bud</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Stäng"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Leading bidder + countdown timer in one row -->
+                <div class="d-flex justify-content-between align-items-center mb-2 w-100">
+                    <div>
+                        <text id="modal-bid-status">Ledande bud | </text>
+                        <strong id="modal-current-highest-bid">@Model.CurrentHighestBid.ToString("N0") kr</strong>
+                    </div>
+
+                    <!--Countdown timer, set by JS-->
+                    <div class="countdown" data-end="@Model.AuctionEndDate?.ToString("o")" data-context="modal"></div>
+                </div>
+
+                <!-- Form for placing a bid -->
+                <form id="bid-form">
+                    <div id="bid-modal-response" class="mt-3"></div> <!-- For displaying error messages -->
+
+                    <input type="hidden" id="adId" name="adId" value="@Model.Id" />
+
+                    @*Label for max bid input, and outbid-info if applicable*@
+                    <div class="d-flex justify-content-between">
+                        <label for="maxBidAmount" class="form-label fw-bold">Ditt maxbud</label>
+                        <span id="modal-bid-outbid" class="fw-semibold text-danger">@(Model.IsOutbid ? "Överbjuden" : "") </span>
+                    </div>
+                    
+                    @* Input for max bid amount *@
+                    <div class="input-group mb-2">
+                        <input type="number" step="0.01" name="maxBidAmount" class="form-control" required />
+                        <span class="input-group-text">kr</span>
+                    </div>
+
+                    @* Show relevant info below the input field *@
+                    <div id="modal-bid-hint" class="form-text text-muted small mb-3">
+                        @if (Model.IsLeadingBidder)
+                        {
+                            <text>Ditt nuvarande maxbud är @Model.LeadingMaxbid.ToString("N0") kr.</text>
+                        }
+                        else
+                        {
+                            <text>Lägg @Model.MinimumBid.ToString("N0") kr eller mer.</text>
+                        }
+                    </div>
+
+                    @{
+                        var btnText = @Model.IsLeadingBidder ? "Bekräfta bud" : "Lägg bud";
+                    }
+                    <button type="submit" id="PlaceBidBtn" class="btn btn-success w-100">@btnText</button>
+                </form>
+
+                <div class="mt-3 small">
+                    Du är bunden till att köpa varan om du vinner.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- For JavaScript, to get user id -->
+<div id="user-data" data-user-id="@UserManager.GetUserId(User)" style="display: none;"></div>
+
+<!-- Alert container for mobile alerts, displayed on top of the page-->
+<div id="mobileAlertContainer" class="d-md-none position-fixed top-0 start-0 end-0 z-index-2000"></div>
+
+@section Scripts {
+    <!--SignalR client library-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
+}
+

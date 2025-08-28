@@ -1,0 +1,100 @@
+﻿@using Auctionsite
+@using Auctionsite.Models
+@using Microsoft.AspNetCore.Http
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    @* Inject the antiforgery service so we can access CSRF tokens *@  
+        @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+    <!--
+        This meta tag contains the CSRF (Cross-Site Request Forgery) token
+        that protects against unauthorized form submissions or AJAX requests.
+        It can be read from JavaScript and sent with API or SignalR requests.
+    -->
+    <meta name="csrf-token" content="@Antiforgery.GetAndStoreTokens(Context).RequestToken" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Fifty</title>
+    <link rel="icon" type="image/png" href="~/Images/Website/ShadowedHeart50_nobg.png" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Auctionsite.styles.css" asp-append-version="true" />
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"> <!-- Bootstrap Icons CDN -->
+    <!-- Fonts from Google-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merienda:wght@800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Container for dynamic toasts -->
+    <div id="toastContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 1060;"></div>
+    <!-- Header with navigation bar -->
+    <header id="site-header">
+        <div role="banner">
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+                <div class="container-fluid navbar-row">
+                    <a class="navbar-brand p-0" asp-area="" asp-controller="Home" asp-action="Index">
+                        <img src="~/Images/Website/ShadowedHeart50_nobg.png" />
+                        <span class="merienda" id="Layout-headline">Fifty Auctions</span>
+                    </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    @{
+                        var isIndex = Context.Request.Path == "/";
+                    }
+                    @if (!isIndex)
+                    {
+                        <!-- Search Form -->
+                            <form class="d-flex w-100 order-4 order-md-2 my-2 my-md-0" asp-controller="Advertisement" asp-action="Search" method="get" id="unified-search-form">
+                            <div class="input-group">
+                                <input id="unified-search-input" name="SearchTerm" class="form-control w-75" type="search" placeholder="Sök produkt..." aria-label="Sök">
+                                <div class="w-25">
+                                    @await Component.InvokeAsync("CategoryNav")
+                                </div>
+                            </div>
+                        </form>
+                    }
+                    <div class="navbar-collapse collapse d-sm-inline-flex mobile-menu flex-shrink-0 order-3 ms-auto">
+                        <partial name="_LoginPartial" />
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <div class="container-fluid" style="max-width: 1750px;">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <!-- Container for dynamically loaded notification sidebar -->
+    <div id="notification-sidebar-container"></div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container footer-top text-center border-bottom">
+            <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-decoration-none linktxt-rosewine me-2">Integritet</a>
+            <a asp-area="" asp-controller="Home" asp-action="" class="text-decoration-none linktxt-rosewine me-2">Regler</a>
+            <a asp-area="" asp-controller="Home" asp-action="" class="text-decoration-none linktxt-rosewine">Kontakt</a>
+        </div>
+        <div class="container footer-bottom text-center">
+            <img class="mb-2" src="~/Images/Website/ShadowedHeart50_nobg.png" style="width: 30px; height: 30px;" />
+            &copy; 2025 by Auctionsite
+        </div>
+    </footer>
+
+    @RenderSection("PreSiteScripts", required: false) <!-- For scripts that need to run before site.js -->
+
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

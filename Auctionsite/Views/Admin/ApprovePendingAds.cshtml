@@ -1,0 +1,118 @@
+﻿@using Auctionsite
+@using Auctionsite.Models
+@using Auctionsite.Models.VM
+@model ApprovePendingAdVM
+
+@{
+    ViewData["Title"] = "Godkänn annonser";
+
+    // Group the ads
+    var todayAds = Model.Ads.Where(a => (DateTime.Now - a.AddedAt).Days == 0);
+    var weekAds = Model.Ads.Where(a => (DateTime.Now - a.AddedAt).Days > 0 && (DateTime.Now - a.AddedAt).Days <= 7);
+    var olderAds = Model.Ads.Where(a => (DateTime.Now - a.AddedAt).Days > 7);    
+}
+
+<h2 class="col-12 col-md-8 col-lg-6 mx-auto px-3">Annonser som behöver godkännas.</h2>
+
+@if (!Model.Ads.Any())
+{
+    <p>Det finns inga annonser att godkänna.</p>
+}
+else
+{
+    <div class="container-fluid mt-4">
+        <div class="row">            
+            <!-- List with ads -->
+            <div class="col-12 col-md-8 col-lg-6 mx-auto px-3 pt-2">
+                @* Exception/error *@
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        @TempData["Error"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+                @* Success *@
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        @TempData["Success"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+
+                @* Section: Today *@
+                @if (todayAds.Any())
+                {
+                    <h4 class="mb-3">Idag</h4>
+                    <div class="list-group mb-4">
+                        @await Html.PartialAsync("_AdListGroupPartial", todayAds)
+                    </div>
+                }
+
+                @* Section: Latest week *@
+                @if (weekAds.Any())
+                {
+                    <h4 class="mb-3">Senaste veckan</h4>
+                    <div class="list-group mb-4">
+                        @await Html.PartialAsync("_AdListGroupPartial", weekAds)
+                    </div>
+                }
+
+                @* Section: Older than a week *@
+                @if (olderAds.Any())
+                {
+                    <h4 class="mb-3">Äldre än en vecka</h4>
+                    <div class="list-group">
+                        @await Html.PartialAsync("_AdListGroupPartial", olderAds)
+                    </div>
+                }
+            </div>
+
+            <!-- Preview Modal -->
+            <div class="modal fade" id="approvePreviewModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Förhandsgranska annons</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Stäng"></button>
+                        </div>
+                        <div class="modal-body p-0">
+                            <!-- Placeholder for ads -->
+                            <div id="approvePreviewBody"></div>
+
+                            <!-- Reject Form -->                            
+                            <form id="rejectForm" asp-action="RejectAd" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" id="rejectAdId" name="id" value="0" />
+
+                                <div class="px-4 pb-2">
+                                    <label for="reason" class="form-label">Orsak till avvisning</label>
+                                    <textarea id="reason" name="reason" class="form-control" rows="3" placeholder="Skriv en kort förklaring..." required></textarea>
+                                </div>
+                            </form>                                                       
+                        </div>
+                        <div class="modal-footer px-4">
+                            <div class="d-flex w-100 m-0 justify-content-between">
+                                <!-- Form for approve -->
+                                <form asp-action="ApproveAd" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" id="approveAdId" name="id" value="0" />
+                                    <button type="submit" class="btn btn-sm btn-success d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-check-lg me-2"></i> Godkänn
+                                    </button>
+                                </form>
+
+                                <!-- Button for Reject Form -->
+                                <button type="submit" form="rejectForm" class="btn btn-sm btn-danger d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-x-lg me-2"></i> Avvisa
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,1013 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+/**** Fonts and icon-settings ****/
+
+.merienda {
+    font-family: "Merienda", cursive;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+}
+.inter{
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+}
+.bi {
+    vertical-align: middle; 
+    overflow: visible; 
+    padding: 0; 
+    margin: 0;
+    display: inline-block;     
+}
+
+/****  NAVBAR  ****/
+
+.navbar-iconsize {    
+    font-size: 25px;
+    line-height: 1;
+    vertical-align: middle;
+    position: relative;
+    top: 2px;
+}
+.fa.navbar-iconsize {
+    top: 0px;
+}
+.bi.navbar-iconsize {
+    top: -4px; 
+}
+.custom-border {
+    border-color: #8e3a59 !important;
+}
+    .custom-border:hover {
+        border-color: #752d4c !important;
+    }
+
+
+#Layout-headline {
+    font-size: clamp(1.1rem, 2vw, 2rem);
+    white-space: nowrap;
+    min-width: 0;
+}
+
+.navbar {
+    height: auto;
+}
+
+.navbar-brand {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+    .navbar-brand img {
+        height: 100%;
+        max-height: 48px;
+        width: auto;
+    }
+
+#site-header .container-fluid {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+#site-header .header-search {
+    flex: 1 1 350px;
+    min-width: 250px;
+    max-width: 600px;
+}
+
+#site-header .navbar-collapse {
+    flex: 0 0 auto;
+    min-width: 180px;
+}
+
+/* --- Mobile screens --- */
+
+
+@media (max-width: 900px) {
+    #site-header .header-search {
+        flex-basis: 100%;
+        max-width: 100%;
+        margin-top: 0.5rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    nav.navbar {
+        position: relative;
+    }
+    .mobile-menu {
+        position: absolute;
+        top: 100%;
+        background-color: #f9f9f9;        
+        padding: 10px;
+        border-top: 1px solid #ddd;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        z-index: 1000;
+        right:0;
+    }
+        .mobile-menu .nav-link {
+            display: inline-block;
+            width: auto;
+            padding: 8px 16px;
+            margin: 8px auto;
+            border-radius: 4px;
+            border: none !important;
+        }
+            .mobile-menu .nav-link:hover {
+                background-color: #ececec;
+                color: #000;
+            }
+}
+
+
+/**** FOOTER ****/
+
+.linktxt-rosewine {
+    color: #8e3a59;
+}
+.footer-top {
+    height: 30px;
+    line-height: 30px;
+}
+.footer-bottom {
+    height: 40px;
+    line-height: 40px;
+}
+
+
+/**** Styles for Create Ads ****/
+
+/** Thumbs **/
+#clickzone {
+    position: relative;
+}
+
+    #clickzone .cz-slot {
+        width: 115px;
+        height: 115px;
+        border: 2px dashed #ced4da;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        background: white;
+    }
+
+        /* Filled slot shows image */
+        #clickzone .cz-slot.filled {
+            border: none;
+            overflow: hidden;
+        }
+
+            #clickzone .cz-slot.filled .cz-img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: opacity 0.2s ease;
+            }
+
+            /* Dim on hover */
+            #clickzone .cz-slot.filled:hover .cz-img {
+                opacity: 0.3;
+            }
+
+            /* Remove button hidden by default */
+            #clickzone .cz-slot.filled .cz-remove {
+                display: none;
+                position: absolute;
+                top: 4px;
+                right: 4px;
+                background: rgba(0, 0, 0, 0.6);
+                border: none;
+                border-radius: 50%;
+                color: white;
+                width: 24px;
+                height: 24px;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+            }
+
+            /* Show remove on hover */
+            #clickzone .cz-slot.filled:hover .cz-remove {
+                display: flex;
+            }
+
+        /* Placeholder slot styling */
+        #clickzone .cz-slot.placeholder {
+            cursor: pointer;
+            color: #6c757d;
+        }
+
+            #clickzone .cz-slot.placeholder:hover {
+                background: #e9ecef;
+            }
+
+            #clickzone .cz-slot.placeholder .cz-plus {
+                font-size: 1.5rem;
+            }
+
+
+/** Dropdown‑button **/
+.custom-dropdown-btn {
+    text-align: left;
+}
+    /* Hide the extra dropdown‑toggle caret when using form‑select */
+    .custom-dropdown-btn.dropdown-toggle::after {
+        display: none !important;
+    }
+
+/* Dropdown‑menu */
+.custom-dropdown-menu {
+    min-width: 100%;
+    padding-inline: 0.5rem;
+    border: 1px solid rgba(0,0,0,.15);
+    inset-block-start: -2px !important;
+}
+    /* Dropdown‑items */
+    .custom-dropdown-menu .dropdown-item {
+        display: block;
+        white-space: nowrap;
+        border-radius: 0.25rem;
+    }
+
+        /* Dropdown‑items hover */
+        .custom-dropdown-menu .dropdown-item:hover,
+        .custom-dropdown-menu .dropdown-item:focus {
+            background-color: #e5e5e5;
+            color: #212529;
+        }
+        
+/**** Styles for Ad Cards ****/
+.adCardTitle,
+.adCardTitle a {
+    display: -webkit-box; /* Enable multi-line flexbox for line-clamping */
+    -webkit-line-clamp: 2; /* Limit text to 2 lines */
+    -webkit-box-orient: vertical; /* Set vertical orientation for clamping */
+
+    overflow-wrap: break-word; /* Allow otherwise unbreakable lines to wrap to prevent horizontal overflow */
+    word-break: break-word; /* Force break within words if they exceed the container width */
+
+    white-space: normal !important; /* Allow normal wrapping */
+    overflow: hidden; /* Required for -webkit-line-clamp truncation to apply "..." */
+}
+    .adCardTitle :hover {
+        text-decoration: underline !important;
+    }
+
+.fav-heart {
+    background: transparent;
+    border: none;
+    padding-top: 0.75rem;
+}
+    .fav-heart:focus {
+        outline: none !important;
+        box-shadow: none !important;
+    }
+    .fav-heart svg {
+        width: 1.5rem;
+        height: 1.5rem;
+        fill: rgba(18, 18, 18, 0.5) !important; /*Transparent darkgray*/
+        stroke: #fff !important;
+        stroke-width: 1.5px !important;
+        transition: fill 0.2s ease;
+    }
+    .fav-heart:hover svg {
+        fill: red !important;
+    }
+    .fav-heart.favourited svg {
+        fill: red !important;
+    }
+
+.adCard {
+    width: 250px;    
+}
+
+.adCardImg {
+    width: 100%;
+    height: 250px;
+    object-fit: cover
+}
+
+/**** Styles only for Detailed Ads ****/
+
+.ad-wrapper {
+    width: 100%;
+    max-width: 80rem;
+    margin: 0 auto;
+}
+.favourite-toggle:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+.favourite-toggle .icon-filled {
+    display: none;
+}
+
+.favourite-toggle.favourited .icon-filled {
+    display: inline-block;
+}
+
+.favourite-toggle.favourited .icon-outline {
+    display: none;
+}
+
+/* ---- Toaster in ad-details view ----- */
+
+#ad-toast-container .toast {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 0.5rem;
+}
+
+/* Animation: slide in from the right */
+@keyframes slideInFromScreenRight {
+    from {
+        transform: translateX(100vw);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+#ad-toast-container .toast.slide-in {
+    animation: slideInFromScreenRight 0.9s ease-in forwards;
+}
+
+/*Slide out to the right*/
+@keyframes slideOutToRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: translateX(100vw);
+        opacity: 0;
+    }
+}
+
+#ad-toast-container .toast.slide-out {
+    animation: slideOutToRight 0.9s ease-out forwards;
+}
+
+/*----------- Alerts in mobile  view --------*/
+
+/* Mobile override: alert container at the top of the screen */
+@media (max-width: 768px) {
+    #mobileAlertContainer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 2000; 
+        padding: 0.5rem;
+    }
+
+    .alert {
+        margin-bottom: 0.5rem; /* Space between alerts if needed */
+    }
+}
+
+/**** Styles for Ad Preview and Detailed Ads ****/
+
+/* --- Breadcrumbs --- */
+.ad-breadcrumbs {
+    /* Smaller font for breadcrumbs */
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    color: #000000;
+}
+    .ad-breadcrumbs .breadcrumb-item a {
+        color: #000 !important;
+        text-decoration: none !important;
+    }
+        .ad-breadcrumbs .breadcrumb-item a:hover,
+        .ad-breadcrumbs .breadcrumb-item a:focus {
+            color: #000 !important;
+            text-decoration: underline !important;
+        }
+
+/* --- Carousel & Media Section --- */
+.ad-carousel {
+    /* Rounded corners, shadow, clipped overflow */
+    position: relative;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+    .ad-carousel img,
+    .ad-carousel video {
+        /* Fit media into carousel area */
+        width: 100%;
+        height: auto;
+        max-height: 380px;
+        object-fit: contain;
+        background-color: #f8f9fa;
+    }
+
+.carousel-indicators {
+    /* Raise indicators slightly */
+    bottom: -5px;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    /* Semi-transparent gradient overlays */
+    width: 10%;
+    opacity: 0.7;
+    background: linear-gradient(90deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%);
+}
+
+.carousel-control-next {
+    background: linear-gradient(270deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%);
+}
+
+    .carousel-control-prev:hover,
+    .carousel-control-next:hover {
+        /* Fully opaque on hover */
+        opacity: 1;
+    }
+
+/* --- Video loading overlay --- */
+.video-overlay {
+    /* Full-cover dark overlay with spinner */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.6);
+    color: white;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* --- Thumbnails --- */
+.thumbnail-btn {
+    /* Clickable thumbnail frames */
+    flex: 0 0 15%;
+    max-width: 70px;
+    aspect-ratio: 1 / 1;
+    padding: 2px;
+    border: 2px solid transparent;
+    background: none;
+    cursor: pointer;
+    border-radius: 0.25rem;
+    overflow: hidden;
+    transition: border-color 0.2s ease;
+}
+
+    .thumbnail-btn:hover {
+        /* Highlight on hover */
+        border-color: #6c757d;
+    }
+
+    .thumbnail-btn.active {
+        /* Active thumbnail border */
+        border-color: #0d6efd;
+    }
+
+    .thumbnail-btn img {
+        /* Fit thumbnail image inside button */
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 0.25rem;
+    }
+
+.video-thumb {
+    /* Special styling for video thumbnail */
+    background-color: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0d6efd;
+    font-size: 1.5rem;
+}
+
+/* --- Accordion Sections --- */
+.accordion-button:not(.collapsed) {
+    /* Highlight expanded header */
+    background-color: #f0f7ff;
+}
+
+/* --- Responsive tweaks --- */
+@media (max-width: 768px) {
+    .thumbnail-list {
+        /* Horizontal scroll on mobile */
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        padding-bottom: 0.5rem;
+    }
+
+    .thumbnail-btn {
+        /* Snap thumbnails */
+        flex: 0 0 60px;
+        scroll-snap-align: start;
+    }
+
+    .action-buttons {
+        /* Stack buttons on small screens */
+        flex-direction: column;
+    }
+        .action-buttons .btn {
+            width: 100%;
+        }
+
+    .title {
+        font-size: 1.5rem;
+    }
+
+    .ad-carousel img,
+    .ad-carousel video {
+        max-height: 300px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 992px) {
+    .action-buttons .btn {
+        padding: 0.5rem 0.75rem;
+    }
+}
+
+/* --- Accessibility Helpers --- */
+:focus-visible {
+    outline: 3px solid #0d6efd;
+    outline-offset: 2px;
+}
+
+.visually-hidden:not(:focus):not(:active) {
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+}
+
+/**** Styles for Approve Ads ****/
+
+.approve-title-cont {    
+    min-width: 0;
+}
+    .approve-title-cont h5 {
+        display: -webkit-box; /* Enable multi-line flexbox for line-clamping */
+        -webkit-line-clamp: 2; /* Limit text to 2 lines */
+        -webkit-box-orient: vertical; /* Set vertical orientation for clamping */
+
+        overflow-wrap: break-word; /* Allow otherwise unbreakable lines to wrap to prevent horizontal overflow */
+        word-break: break-word; /* Force break within words if they exceed the container width */
+
+        white-space: normal !important; /* Allow normal wrapping */
+        overflow: hidden; /* Required for -webkit-line-clamp truncation to apply "..." */
+    }
+
+.approve-badge-cont {
+    flex-shrink: 0; /* so bagdge-container do not shrink */
+    overflow: visible; /* text always visible */
+}
+
+
+/*---------------------------------------------------------------------------------------------*/
+                                       /*Inställningar*/
+/*---------------------------------------------------------------------------------------------*/
+
+/* ?? Button Styling */
+.btn-custom-RoseWineBase {
+    background-color: #8e3a59;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 24px;
+    font-weight: 500;
+    font-size: 15px;
+    transition: background-color 0.25s ease;
+}
+
+    .btn-custom-RoseWineBase:hover {
+        background-color: #752d4c;
+    }
+
+/*             Mina Sidor                */
+.btn-custom-RoseWineBase-sm-responsive {
+    display: inline-block !important;
+    background-color: #8e3a59;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 24px;
+    font-weight: 500;
+    font-size: 15px;
+    transition: background-color 0.25s ease;
+}
+
+    .btn-custom-RoseWineBase-sm-responsive:hover {
+        background-color: #752d4c;
+    }
+    @media (max-width: 767.98px) {
+        .btn-custom-RoseWineBase-sm-responsive {
+            display: block !important;
+            width: 100% !important;
+            margin-top: 0.5rem !important;
+        }
+    }
+
+.my-ads-grid .col .adCard {
+    /* Include padding in the width calc */
+    box-sizing: border-box;
+    /* Make sure the adCard doesn't grow outside it's container */
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+
+/*--------------------------------------*/
+
+    /* ?? Title Styling */
+    .form-title-Nav-Pages {
+    font-size: 34px;
+    font-weight: 800;
+    color: #8e3a59;
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(8px);
+    background: rgba(255, 255, 255, 0.1);
+    padding: 7px 20px;
+    border-radius: 10px;
+    letter-spacing: 1px;
+    margin-bottom: 7px;
+    margin-top: 5px;
+}
+
+/* ?? Form Container */
+.form-container-Nav-Pages {
+    background: #fdfcfd;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+/* ?? Input Fields */
+.form-floating-Nav-Pages .form-control {
+    border-radius: 6px;
+    border: 1px solid #d8cfd2;
+    background-color: #fdfcfd;
+    font-size: 15px;
+    padding: 12px;
+    transition: border-color 0.3s ease, box-shadow 0.2s ease;
+}
+
+    /* ?? Focus Effect */
+    .form-floating-Nav-Pages .form-control:focus {
+        border-color: #8e3a59;
+        box-shadow: 0 0 0 2px rgba(142, 58, 89, 0.1);
+        background-color: #fff;
+    }
+
+/* ?? Label Styling */
+.form-floating-Nav-Pages label {
+    font-weight: 500;
+    color: #5f4c50;
+    font-size: 14px;
+}
+
+/* ?? Validation Error */
+.text-danger-Nav-Pages {
+    font-size: 13px;
+    color: #b33f5a;
+}
+
+/* ?? Success Feedback */
+.input-group-text-Nav-Pages .text-success {
+    background: #f1eaed;
+    color: #8e3a59;
+    border: none;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+/*---------------------------------------------------------------------------------------------*/
+
+/*---------------------------------------------------------------------------------------------*/
+
+
+/*---------------------------------------------------------------------------------------------*/
+                                          /*Chat*/
+/*---------------------------------------------------------------------------------------------*/
+
+.chat-container {
+    position: relative;
+}
+
+.chat-bubble {
+    position: relative;
+}
+
+.message-meta {
+    font-size: 0.75rem;
+    color: #6c757d;
+    margin-top: 4px;
+}
+
+.new-message-banner {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0 auto;
+    max-width: 100%;
+    background-color: #d1ecf1; /* alert-info's bg */
+    color: #0c5460;
+    padding: 8px 16px;
+    text-align: center;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#chat-banner-anchor {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.chat-item {
+    position: relative;
+    padding-left: 2rem;
+}
+
+.chat-unread-dot {
+    width: 10px;
+    height: 10px;
+    background-color: #0d6efd; /* Bootstrap primary blue */
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 0.75rem; 
+    transform: translateY(-50%);
+}
+
+/* Override Bootstrap's active color for a selected chat conversation in the conversations list*/
+.list-group-item.active.chat-item {
+    background-color: #f0f8ff; /* light blue (AliceBlue) */
+    color: #000; /* black text */
+}
+
+/* When hovering over a chat conversation in the list of conversations */
+.list-group-item.active.chat-item:hover {
+    background-color: #dceeff; /* darker shade of blue */
+    color: #000;
+}
+
+
+/**** Styles for the Share Menu ****/
+
+.share-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.4);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease;
+    z-index: 1050;
+}
+
+    .share-overlay.visible {
+        opacity: 1;
+        visibility: visible;
+    }
+
+.share-menu {
+    display: none;
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -30%);
+    width: 90vw;
+    max-width: 400px;
+    z-index: 1060;
+    opacity: 0;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    transform-origin: top right;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+    .share-menu.show {
+        display: block;
+        opacity: 1;
+        transform: translate(-50%, -30%) scale(1);
+    }
+    .share-menu.fade-out {
+        opacity: 0;
+        transform: translate(-50%, -30%) scale(0.95);
+    }
+    .share-menu code {
+        font-size: 0.875rem;
+    }
+
+.icon-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    justify-items: center;
+}
+
+.icon-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    font-size: 1.75rem;
+    border-radius: 50%;
+    background: transparent;
+    border: 2px solid transparent;
+    color: #333;
+    transition: background 0.3s ease, transform 0.2s ease, color 0.2s ease;
+}
+    .icon-btn i {
+        display: block;
+        line-height: 1;
+        width: 1em; 
+        height: 1em;
+    }
+.icon-btn[data-share="facebook"]:hover  { background: #1877F2;  color: #fff; }
+.icon-btn[data-share="x"]:hover         { background: #1DA1F2;  color: #fff; }
+.icon-btn[data-share="whatsapp"]:hover  { background: #25D366;  color: #fff; }
+.icon-btn[data-share="telegram"]:hover  { background: #0088CC;  color: #fff; }
+.icon-btn[data-share="email"]:hover     { background: #D14836;  color: #fff; }
+.icon-btn[data-share="sms"]:hover       { background: #FF9500;  color: #fff; }
+.icon-btn[data-share="messenger"]:hover { background: #0084FF;  color: #fff; }
+.icon-btn[data-share="snapchat"]:hover  { background: #FFCC00;  color: #fff; }
+.icon-btn[data-share="instagram"]:hover { background: linear-gradient(45deg, #405DE6, #833AB4, #E1306C); color: #fff; }
+
+#openShareMenuBtn:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/*---------------------------------------------------------------------------------------------*/
+/*Startpage*/
+/*---------------------------------------------------------------------------------------------*/
+.start-txt {
+    color: black;
+    text-align: center;
+    padding: 40px 10px;
+}
+
+.start-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+    margin: 20px auto;
+    padding: 16px;
+    overflow-x: unset;
+    scroll-behavior: smooth;
+    white-space: normal;
+    max-width: 1400px;
+    justify-content: center;
+    justify-items: center;
+}
+
+.start-card {
+    max-width: 250px;
+    width: 100%;
+    margin: 0;
+}
+
+.search-form {
+    display: flex;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.search-input {
+    flex-grow: 1;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px 0 0 4px;
+    outline: none;
+}
+
+.search-form .btn {
+    border-radius: 0 4px 4px 0;
+}
+
+.countdown-timer.countdown-warning {
+    color: red;
+}
+
+.countdown-separator {
+    color: inherit; /* Inherit from parent container -> no red color */
+}
+
+/*---------------------------------------------------------------------------------------------*/
+/*Navbar 2*/
+/*---------------------------------------------------------------------------------------------*/
+
+.navbar-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+#unified-search-form {
+    flex: 1 1 1000px;
+    max-width: 1000px;
+    min-width: 250px;
+    margin-left: 24px;
+    margin-right: 24px;
+}
+
+#user-menu {
+    top:50px;
+}
+
+
+/* -------------- Sidebar Notifications -----------------*/
+
+/* Used for truncating notification message to 3 lines */
+.truncate-notification-message {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+}
+
+/* Used to truncate ad title inside notification message */
+.truncate-ad-title {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: inline-block;
+    max-width: 100%;
+    vertical-align: bottom;
+}
+
+.notification-meta {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    flex-shrink: 0;
+    height: 100%;
+    padding-right: 4px;
+}
+
+.notification-arrow {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 20px;
+    height: 20px;
+}

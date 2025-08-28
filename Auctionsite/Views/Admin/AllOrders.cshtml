@@ -1,0 +1,46 @@
+﻿@using Vega.Models.Database
+@model IEnumerable<Order>
+
+@{
+    ViewData["Title"] = "Alla Ordrar";
+}
+
+<h2>Alla ordrar</h2>
+
+@if (!Model.Any())
+{
+    <p>Det finns inga beställningar i systemet ännu.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Ordernummer</th>
+                <th>Datum</th>
+                <th>Summa</th>
+                <th>Användare</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Model)
+            {
+                <tr>
+                    <td>@order.Id</td>
+                    <td>@order.OrderDate.ToString("yyyy-MM-dd")</td>
+                    <td>@order.TotalPrice.ToString("c")</td>
+                    <td>
+                        @if (order.Buyer != null)
+                        {
+                            <a asp-action="OrdersByUser" asp-route-id="@order.Buyer.Id">@order.Buyer.Email</a>
+                        }
+                        else
+                        {
+                            <span>Okänd</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

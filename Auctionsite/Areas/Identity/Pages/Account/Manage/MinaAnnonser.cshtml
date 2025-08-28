@@ -1,0 +1,24 @@
+﻿@page
+@model Auctionsite.Areas.Identity.Pages.Account.Manage.MinaAnnonserModel
+@using Auctionsite.Areas.Identity
+@using Auctionsite.Areas.Identity.Pages
+@using Auctionsite.Areas.Identity.Pages.Account
+@using Auctionsite.Areas.Identity.Pages.Account.Manage
+@using Auctionsite.Models.Database
+@using Auctionsite.Models.VM
+
+@{
+    ViewData["Title"] = "Mina Annonser";
+}
+
+@* Success *@
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+    <partial name="_UserOverviewPartial" model="Model.Overview" />
+

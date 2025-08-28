@@ -1,0 +1,14 @@
+﻿@model IEnumerable<Auctionsite.Models.VM.CategoryGroupVM>
+
+<select name="CategoryId" class="form-select w-100" id="unified-category-dropdown" aria-label="Välj kategori">
+    <option value="">Alla kategorier</option>
+    @foreach (var group in Model)
+    {
+        <optgroup label="@group.GroupName">
+            @foreach (var subcategory in group.SubCategories)
+            {
+                <option value="@subcategory.Value">@subcategory.Text</option>
+            }
+        </optgroup>
+    }
+</select>

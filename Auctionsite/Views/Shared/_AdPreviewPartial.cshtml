@@ -1,0 +1,327 @@
+﻿@model Auctionsite.Models.VM.AdDetailsVM
+@using Auctionsite
+@using Auctionsite.Extensions
+@using Auctionsite.Models
+@using Auctionsite.Models.Database
+
+<div class="container-fluid p-4 rounded mx-auto ad-details-container">
+    <!-- Breadcrumbs -->
+    <nav class="ad-breadcrumbs mb-4" aria-label="Kategorisökväg">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <span>Alla annonser</span>
+            </li>
+            @if (Model.Breadcrumbs != null && Model.Breadcrumbs.Any())
+            {
+                @for (int i = 0; i < Model.Breadcrumbs.Count; i++)
+                {
+                    var crumb = Model.Breadcrumbs[i];
+                    var isLast = (i == Model.Breadcrumbs.Count - 1);
+                    <li class="breadcrumb-item @(isLast ? "active" : "")" @(isLast ? "aria-current=\"page\"" : "")>
+                        @if (!isLast)
+                        {
+                            <span>@crumb.Name</span>
+                        }
+                        else
+                        {
+                            @crumb.Name
+                        }
+                    </li>
+                }
+            }
+        </ol>
+    </nav>
+
+    <!-- TOP ROW -->
+    <div class="row">
+        <!-- LEFT COLUMN -->
+        <div class="col-lg-7 col-xl-8 col-12">
+            <!-- MEDIA -->
+            <div class="d-flex align-items-center justify-content-center position-relative">
+                <!-- Thumbnails -->
+                <div class="d-flex flex-column flex-md-column flex-wrap gap-2 mt-3 me-3 thumbnail-list">
+                    @{
+                        var images = Model.Images
+                            .Where(i => i.Url != Model.HeadImageURL)
+                            .OrderBy(i => i.Order)
+                            .ToList();
+                        int index = 0;
+                    }
+                    @if (!string.IsNullOrEmpty(Model.HeadImageURL))
+                    {
+                        <button type="button" class="thumbnail-btn active mb-2" data-index="@(index++)">
+                            <img src="@Model.HeadImageURL" class="img-thumbnail" alt="Huvudbild" />
+                        </button>
+                    }
+                    @foreach (var img in images)
+                    {
+                        <button type="button" class="thumbnail-btn mb-2" data-index="@(index++)">
+                            <img src="@img.Url" class="img-thumbnail" alt="Annonsbild" />
+                        </button>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.VideoURL))
+                    {
+                        <button type="button" class="thumbnail-btn video-thumb mt-auto" data-index="@(index)">
+                            <i class="bi bi-play-circle-fill"></i>
+                        </button>
+                    }
+                </div>
+                <!-- Carousel -->
+                <div class="flex-fill">
+                    @{
+                        int mediaCount = (string.IsNullOrEmpty(Model.HeadImageURL) ? 0 : 1) + images.Count + (string.IsNullOrEmpty(Model.VideoURL) ? 0 : 1);
+                    }
+                    @if (mediaCount == 0)
+                    {
+                        <div class="text-center p-5 text-muted">
+                            <i class="bi bi-image" style="font-size:3rem"></i>
+                            <p class="mt-2">Inga bilder eller video har lagts till än</p>
+                        </div>
+                    }
+                    <div id="adCarousel" class="carousel slide ad-carousel rounded-0" data-bs-ride="false">
+                        <div class="carousel-inner">
+                            @{
+                                int idx = 0;
+                                if (!string.IsNullOrEmpty(Model.HeadImageURL))
+                                {
+                                    <div class="carousel-item active">
+                                        <img src="@Model.HeadImageURL" class="d-block w-100" alt="" />
+                                    </div>
+                                    ;
+                                    idx++;
+                                }
+                                foreach (var img in images)
+                                {
+                                    <div class="carousel-item @(idx==0?"active":"")">
+                                        <img src="@img.Url" class="d-block w-100 img-fluid" alt="" />
+                                    </div>
+                                    ;
+                                    idx++;
+                                }
+                                if (!string.IsNullOrEmpty(Model.VideoURL))
+                                {
+                                    <div class="carousel-item @(idx==0?"active":"") position-relative">
+                                        <div class="video-overlay d-flex align-items-center justify-content-center">
+                                            <div class="spinner-border text-light" role="status"></div>
+                                        </div>
+                                        <video controls class="d-block w-100">
+                                            <source src="@Model.VideoURL" type="video/mp4" />
+                                        </video>
+                                    </div>
+                                    ;
+                                }
+                            }
+                        </div>
+
+                        @if (mediaCount > 1)
+                        {
+                            <button class="carousel-control-prev" type="button" data-bs-target="#adCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon"></span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#adCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon"></span>
+                            </button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div class="col-lg-5 col-xl-4 col-12">            
+            <!-- Title -->
+            <div class="mb-3">
+                <h4 class="title">@Model.Title</h4>
+            </div>
+            <!-- PRICE + BUTTONS -->
+            <div class="mb-3">
+                <!-- Price card -->
+                <div class="card bg-light rounded-0 mb-4">
+                    <div class="card-body">
+                        @if (!Model.StartingPrice.HasValue && !Model.BuyNowPrice.HasValue)
+                        {
+                            <div class="mb-2 text-center text-muted">
+                                <div>Inga priser satta än</div>
+                            </div>
+                        }
+
+                        @if (Model.StartingPrice.HasValue)
+                        {
+                            <div class="mb-2 text-center">
+                                <div>Utropspris</div>
+                                <div class="fs-4"><strong>@Model.StartingPrice.Value.ToString("N0") kr</strong></div>
+                            </div>
+                        }
+                        @if (Model.BuyNowPrice.HasValue)
+                        {
+                            <div class="mb-2 text-center">
+                                <div>Köp nu:</div>
+                                <div class="fs-4"><strong>@Model.BuyNowPrice.Value.ToString("N0") kr</strong></div>
+                            </div>
+                        }
+
+                        @* Action buttons *@
+                        <div class="d-flex flex-column gap-2 mt-3 action-buttons">
+                            @* Place bid *@
+                            @if (Model.AdType == AdType.Auction || Model.AdType == AdType.Both)
+                            {
+                                <button class="btn btn-dark btn-sm w-100 fw-bold d-flex align-items-center justify-content-center" disabled>
+                                    <i class="bi bi-cash-stack me-2"></i>Lägg bud
+                                </button>
+                            }
+
+                            @* Buy now *@
+                            @if (Model.AdType == AdType.BuyNow || Model.AdType == AdType.Both)
+                            {
+                                <button class="btn btn-primary btn-sm w-100 fw-bold d-flex align-items-center justify-content-center" disabled>
+                                    <i class="bi bi-cart-fill me-2"></i>Köp nu
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Favorite/Share -->
+                <div class="d-flex gap-2 px-3 mb-4">
+                    <!-- Favorite button -->
+                    <button class="btn btn-outline-danger btn-sm mb-2 me-2 d-flex flex-fill align-items-center justify-content-center favourite-toggle" aria-label="Spara som favorit" disabled>
+                        <i class="bi bi-heart me-2 icon-outline"></i>
+                        Favorit
+                    </button>
+                    <!-- Share button -->
+                    <button class="btn btn-outline-secondary btn-sm mb-2 d-flex flex-fill align-items-center justify-content-center" aria-label="Dela annons" disabled>
+                        <i class="bi bi-share me-2"></i>Dela
+                    </button>
+                </div>
+            </div>            
+        </div>      
+    </div>
+
+    <!-- BOTTOM ROW -->
+    <div class="row">
+        <!-- LEFT COLUMN -->
+        <div class="col-lg-7 col-xl-8  col-12">
+            <!-- Description titel and Condition -->
+            <div class="mt-4">
+                <h5 class="d-flex align-items-center m-0"><i class="bi bi-card-text me-2"></i>Beskrivning</h5>
+                <!-- Conditions badge -->
+                @{
+                    string conditionBg = "bg-secondary"; // Default fallback color
+                    @if (Model.Condition.HasValue)
+                    {
+                        // Determine color based on condition
+                        conditionBg = Model.Condition switch
+                        {
+                            Condition.UnUsed => "bg-success",               // Oanvänd → Green
+                            Condition.LikeNew => "bg-success",               // Nyskick → Green
+                            Condition.Good => "bg-warning text-dark",     // Gott skick → Yellow + Dark text
+                            Condition.WellUsed => "bg-warning text-dark",     // Välanvänd → Yellow + Dark text
+                            Condition.Defect => "bg-danger",                // Defekt → Red
+                            _ => "bg-secondary"              // Fallback
+                        };
+                    }
+
+                }
+                @if (Model.Condition.HasValue)
+                {
+                    <span class="badge @conditionBg d-inline-block w-auto rounded-0">@Model.Condition.GetDisplayName()</span>
+                }
+            </div>
+            <!-- Description -->
+            <div class="py-2 mb-3 border-bottom" style="min-height:7.5rem;">
+                <p class="mb-0 text-break @(string.IsNullOrWhiteSpace(Model.Description) ? "text-muted" : "")">
+                    @(string.IsNullOrWhiteSpace(Model.Description) ? "Ingen beskrivning än..." : Model.Description)
+                </p>
+            </div>
+
+            <!-- Meta Details -->
+            <div>
+                <div class="d-flex mb-3 align-items-center flex-wrap text-break text-muted"><i class="bi bi-calendar3 me-2"></i>Publicerad: <span class="ms-2 small flex-shrink-1 text-break">@Model.AddedAt.ToShortDateString()</span></div>
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div class="col-lg-5 col-xl-4 col-12">
+            <!-- Accordion -->
+            <div class="accordion mb-4" id="adOptions">
+                <!-- Shipping -->
+                <div class="accordion-item mb-2">
+                    <h2 class="accordion-header" id="headingShipping">
+                        <button class="accordion-button collapsed text-break d-flex align-items-center flex-wrap" type="button" data-bs-toggle="collapse" data-bs-target="#shipping">
+                            <i class="bi bi-truck me-2"></i>Frakt
+                        </button>
+                    </h2>
+                    <div id="shipping" class="accordion-collapse collapse" data-bs-parent="#adOptions">
+                        <div class="accordion-body text-break">
+                            <p class="mb-2"><strong>Metod:</strong> @(Model.ShippingMethod ?? "Ej specificerat")</p>
+                            <p><strong>Kostnad:</strong> @(Model.Title)</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Payment -->
+                <div class="accordion-item mb-2">
+                    <h2 class="accordion-header" id="headingPayment">
+                        <button class="accordion-button collapsed text-break d-flex align-items-center flex-wrap" type="button" data-bs-toggle="collapse" data-bs-target="#payment">
+                            <i class="bi bi-credit-card me-2"></i>Betalningsmetoder
+                        </button>
+                    </h2>
+                    <div id="payment" class="accordion-collapse collapse" data-bs-parent="#adOptions">
+                        <div class="accordion-body text-break">
+                            @if (!Model.StartingPrice.HasValue && !Model.BuyNowPrice.HasValue)
+                        {
+                                <ul class="list-unstyled mb-0">
+                                    @foreach (var pm in Model.PaymentMethods)
+                                    {
+                                        <li>@pm</li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                <p class="mb-0">Inga betalningsmetoder specificerade.</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <!-- Pickup -->
+                <div class="accordion-item mb-2">
+                    <h2 class="accordion-header" id="headingPickup">
+                        <button class="accordion-button collapsed text-break d-flex align-items-center flex-wrap" type="button" data-bs-toggle="collapse" data-bs-target="#pickup">
+                            <i class="bi bi-box-seam me-2"></i>Avhämtning
+                        </button>
+                    </h2>
+                    <div id="pickup" class="accordion-collapse collapse" data-bs-parent="#adOptions">
+                        <div class="accordion-body text-break">
+                            @if (Model.StartingPrice.HasValue)
+                        {
+                                <p class="mb-0"><i class="bi bi-check-circle text-success me-2"></i>Avhämtning: @Model.StartingPrice.Value.ToString("N0")</p>
+                            }
+                            else
+                            {
+                                <p class="mb-0"><i class="bi bi-x-circle text-danger me-2"></i>Ej tillgänglig för avhämtning</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Seller Info -->
+            <div>
+                @{
+                    var hasUser = !string.IsNullOrEmpty(Model.UserName);
+                    var displayName = hasUser ? Model.UserName : "Logga in för att se användarnamn";
+                    var styleClass = hasUser ? "" : "text-muted";
+                }
+                <!-- Seller Info Card -->
+                <div class="card bg-light rounded-0  mb-4">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="d-flex align-items-center"><i class="bi bi-person-circle me-2"></i>Säljes av:</h6>
+                            <span class="badge @(Model.IsCompanySeller?"bg-primary":"bg-secondary")">@(Model.IsCompanySeller ? "Företag" : "Privatperson")</span>
+                            <p class="mt-2 mb-0 small @styleClass">@displayName</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>              
+    </div>
+</div>

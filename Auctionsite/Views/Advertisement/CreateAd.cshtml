@@ -1,0 +1,223 @@
+﻿@using Auctionsite
+@using Auctionsite.Helpers
+@using Auctionsite.Models
+@using Auctionsite.Models.Database
+@using Auctionsite.Models.VM
+@model AdFormVM
+
+@{
+    ViewData["Title"] = "Skapa Annons";
+    var mainCategories = (List<CategoryForAdvertisement>)ViewBag.MainCategories;
+}
+
+<h1>Skapa en Annons</h1>
+
+<div class="container-fluid mt-4">
+    <div class="row create-ad-row">
+        @* Exception/error *@
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @* Success *@
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        <!-- Create ad -->
+        <div class="col-6 mx-auto px-3">
+            <form id="createAdForm" action="/skapa-annons" method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="All" class="text-danger mb-3"></div>
+                <!-- Category -->
+                <div class="mb-3">
+                    <label class="form-label">Kategori</label>                   
+                    <div id="category-picker" class="dropdown">
+                        <!-- Trigger button for dropdown; items injected via JS -->
+                        <button id="categoryBtn" class="form-select dropdown-toggle custom-dropdown-btn mb-0" type="button" aria-expanded="false"></button>
+
+                        <!-- Dynamic dropdown menu; items injected via JS -->
+                        <ul id="categoryMenu" class="dropdown-menu custom-dropdown-menu"></ul>
+
+                        <!-- Hidden input for model binding -->
+                        <input type="hidden" name="CategoryId" id="categoryIdHidden" value="@Model.CategoryId" />
+                    </div>                    
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+
+                <!-- Images -->
+                <div id="image-upload-container" class="mb-3">
+                    <label class="form-label">Bilder (max 10)</label>
+                    <div id="clickzone" class="border rounded p-3" style="background: #f8f9fa;">
+                        <!-- Slots will be injected here -->
+                        <div id="clickzone-slots" class="d-flex flex-wrap gap-2"></div>
+                        <!-- Invisible file input -->
+                        <input type="file" id="imageFiles" accept="image/*" style="display:none;" />
+                    </div>
+                    <!-- Hidden inputs for uploaded image URLs -->
+                    <div id="hidden-image-urls"></div>
+                    <!-- Hidden inputs for image order -->
+                    <div id="hidden-image-order"></div>
+                    <!-- Hidden inputs for images to delete -->
+                    <div id="hidden-deleted-image-urls"></div>
+                </div>
+
+                <!-- Video URL -->
+                <div class="mb-3">
+                    <label asp-for="VideoURL" class="form-label">Video (valfri URL)</label>
+                    <input asp-for="VideoURL" class="form-control" />
+                    <span asp-validation-for="VideoURL" class="text-danger"></span>
+                </div>
+
+                <!-- Title -->
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label">Titel<span class="text-danger">*</span></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <!-- Condition -->
+                <div class="mb-3">
+                    <label class="form-label">Skick<span class="text-danger">*</span></label>
+                    <div class="dropdown custom-dropdown" data-for="Condition">
+                        <button class="form-select dropdown-toggle custom-dropdown-btn" type="button" id="conditionBtn" aria-haspopup="listbox" aria-expanded="false" data-for="Condition">
+                            Välj skick
+                        </button>
+                        <ul class="dropdown-menu custom-dropdown-menu" aria-labelledby="conditionBtn" role="listbox" id="conditionMenu">
+                            @foreach (var item in Model.ConditionOptions)
+                            {
+                                <li>
+                                    <a class="dropdown-item" href="#" data-value="@item.Value" data-label="@item.Text">@item.Text</a>
+                                </li>
+                            }
+                        </ul>
+                        <input type="hidden" id="ConditionHidden" name="Condition" value="@Model.Condition" />
+                    </div>
+                    <span asp-validation-for="Condition" class="text-danger"></span>
+                </div>
+
+                <!-- Description -->
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label">Beskrivning<span class="text-danger">*</span></label>
+                    <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <!-- Ad type -->
+                <div class="mb-3">
+                    <label class="form-label">Typ av annons<span class="text-danger">*</span></label>
+                    <div class="dropdown custom-dropdown" data-for="AdType">
+                        <button class="form-select dropdown-toggle custom-dropdown-btn" type="button" id="adTypeBtn" aria-haspopup="listbox" aria-expanded="false" data-for="AdType">
+                            Välj typ
+                        </button>
+                        <ul class="dropdown-menu custom-dropdown-menu" aria-labelledby="adTypeBtn" role="listbox" id="adTypeMenu">
+                            @foreach (var item in Model.AdTypeOptions)
+                            {
+                                <li>
+                                    <a class="dropdown-item" href="#" data-value="@item.Value" data-label="@item.Text">@item.Text</a>
+                                </li>
+                            }
+                        </ul>
+                        <input type="hidden" id="AdTypeHidden" name="AdType"/>
+                    </div>
+                    <span asp-validation-for="AdType" class="text-danger"></span>
+                </div>
+
+                <!-- Price fields -->
+                <div class="mb-3">
+                    <label asp-for="StartingPrice" class="form-label">Startpris</label>
+                    <input asp-for="StartingPrice" type="number" class="form-control" />
+                    <span asp-validation-for="StartingPrice" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="BuyNowPrice" class="form-label">Köp-nu pris</label>
+                    <input asp-for="BuyNowPrice" type="number" class="form-control" />
+                    <span asp-validation-for="BuyNowPrice" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="MinimumEndPrice" class="form-label">Minsta slutpris</label>
+                    <input asp-for="MinimumEndPrice" type="number" class="form-control" />
+                    <span asp-validation-for="MinimumEndPrice" class="text-danger"></span>
+                </div>
+
+                <!-- Pickup and shipping -->
+                <div class="form-check mb-3">
+                    <input asp-for="AvailableForPickup" class="form-check-input" />
+                    <label asp-for="AvailableForPickup" class="form-check-label">Tillgänglig för upphämtning</label>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="PickupLocation" class="form-label">Upphämtningsplats</label>
+                    <input asp-for="PickupLocation" class="form-control" />
+                    <span asp-validation-for="PickupLocation" class="text-danger"></span>
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="ShippingMethod" class="form-label">Fraktmetod</label>
+                    <input asp-for="ShippingMethod" class="form-control" />
+                    <span asp-validation-for="ShippingMethod" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Betalningsmetoder</label>
+                    @foreach (var method in new[] { "Swish", "Banköverföring", "Kortbetalning" })
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="PaymentMethods" value="@method" />
+                            <label class="form-check-label">@method</label>
+                        </div>
+                    }
+                </div>
+
+                <!-- Auction End Date -->
+                <div class="mb-3">
+                    <label asp-for="AuctionEndDate" class="form-label">Slutdatum för auktion</label>
+                    <input asp-for="AuctionEndDate" class="form-control" type="datetime-local" />
+                    <span asp-validation-for="AuctionEndDate" class="text-danger"></span>
+                </div>
+
+                <!-- Company seller -->
+                <div class="form-check mb-3">
+                    <input asp-for="IsCompanySeller" class="form-check-input" />
+                    <label asp-for="IsCompanySeller" class="form-check-label">Jag säljer som företag</label>
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-flex justify-content-between mb-3">
+                    <!-- Submit button -->
+                    <button type="submit" class="btn btn-primary">Skapa annons</button>
+
+                    <!-- Preview button -->
+                    <button type="button" class="btn btn-outline-secondary ad-preview-button ms-2" id="previewButton">
+                        Förhandsgranska
+                    </button>
+                </div>                
+            </form>
+        </div>       
+    </div>
+</div>
+<!-- Preview Modal -->
+<div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="previewModalLabel">Förhandsgranska annons</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Stäng"></button>
+            </div>
+            <div class="modal-body p-0" id="previewModalBody">
+                <p>Börja fylla i fälten för att se en förhandsgranskning.</p>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        window.isEditMode = false;
+    </script>
+    <partial name="_ValidationScriptsPartial" />    
+}

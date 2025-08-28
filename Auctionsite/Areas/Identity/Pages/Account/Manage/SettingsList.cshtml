@@ -1,0 +1,73 @@
+﻿@page
+@model SettingsListModel
+@{
+    ViewData["Title"] = "Inställningar";
+}
+
+<!-- Sidebar for large screens -->
+<div class="col-md-3 d-none d-md-block">
+    <h3 class="fw-bold mb-4">@ViewData["Title"]</h3>
+
+    <!-- Show ManageNav content as a full list -->
+    <div class="w-100">
+        <partial name="_ManageNav" />
+    </div>
+</div>
+
+
+<!-- Dropdown for small screens -->
+<div class="col-12 d-md-none mb-5">
+    <h3 class="fw-bold mb-4">@ViewData["Title"]</h3>
+    <div class ="w-100">
+        <partial name="_ManageNav" />
+    </div>
+</div>
+
+
+
+
+<style>
+    .refined-nav {
+        background: white;
+        border-radius: 10px;
+        padding: 15px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .refined-nav .nav-link {
+        color: #6e2b44; /* darker rose-wine */
+        padding: 12px 18px;
+        border-left: 4px solid transparent;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s ease-in-out;
+        font-size: 16px;
+        border-radius: 6px;
+        position: relative;
+    }
+
+        .refined-nav .nav-link i {
+            font-size: 18px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .refined-nav .nav-link:hover {
+            background: linear-gradient(90deg, rgba(179, 63, 90, 0.15), rgba(110, 43, 68, 0.25));
+            border-left: 4px solid #6e2b44;
+            color: #6e2b44;
+        }
+
+            .refined-nav .nav-link:hover i {
+                transform: translateX(3px);
+            }
+
+        .refined-nav .nav-link.active {
+            border-left: 4px solid #6e2b44;
+            color: #6e2b44;
+            font-weight: bold;
+            background: linear-gradient(90deg, rgba(179, 63, 90, 0.25), rgba(110, 43, 68, 0.35));
+        }
+
+</style>
+

@@ -1,0 +1,122 @@
+﻿@model Auctionsite.Models.VM.UserOverviewViewModel
+
+<div class="mb-4">
+    <h4 class="fw-bold">@Model.FullName</h4>
+    <ul class="nav nav-tabs" id="tabSwitcher" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#adsTab">Annonser</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#reviewsTab">Omdömen</a>
+        </li>
+    </ul>
+    <div class="tab-content pt-3">
+        <div class="tab-pane fade show active" id="adsTab">
+            @if (!Model.Annonser.Items.Any())
+            {
+                <div class="text-muted">Du har inga annonser ännu.</div>
+            }
+            else
+            {
+                <div class="my-ads-grid">
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-2">
+                        @foreach (var ad in Model.Annonser.Items)
+                        {
+                            <div class="col d-flex flex-column mb-2">
+                                @* The Ad Card *@
+                                @await Html.PartialAsync("_AdCardPartial", ad)
+
+                                @* Buttons for Edit and Delete *@
+                                <div class="d-flex mx-2 mt-auto justify-content-between">
+                                    <!-- Edit -->
+                                    <a asp-controller="Advertisement" asp-action="EditAd" asp-route-id="@ad.Id" class="btn btn-sm btn-outline-dark">
+                                        Redigera
+                                    </a>
+
+                                    <!-- Delete -->
+                                    <form asp-controller="Advertisement" asp-action="DeleteAd" asp-route-id="@ad.Id" method="post" onsubmit="return confirm('Är du säker på att du vill ta bort denna annons?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            Ta bort
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <nav class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item @(Model.Annonser.PageNumber == 1 ? "disabled" : "")">
+                            <a class="page-link"
+                               asp-area="Identity"
+                               asp-page="/Account/Manage/MinaAnnonser"
+                               asp-route-PageNumber="@(Model.Annonser.PageNumber - 1)">                               
+                                Föregående
+                            </a>
+                        </li>
+
+                        @for (int i = 1; i <= Model.Annonser.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == Model.Annonser.PageNumber ? "active" : "")">
+                                <a class="page-link"
+                                   asp-area="Identity"
+                                   asp-page="/Account/Manage/MinaAnnonser"
+                                   asp-route-PageNumber="@i">
+                                    @i
+                                </a>
+                            </li>
+                        }
+
+                        <li class="page-item @(Model.Annonser.PageNumber >= Model.Annonser.TotalPages ? "disabled" : "")">
+                            <a class="page-link"
+                               asp-area="Identity"
+                               asp-page="/Account/Manage/MinaAnnonser"
+                               asp-route-PageNumber="@(Model.Annonser.PageNumber + 1)">
+                                Nästa
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="text-center text-muted small mt-2">
+                        Sida @Model.Annonser.PageNumber av @Model.Annonser.TotalPages
+                    </div>
+                </nav>
+            }
+        </div>
+        <div class="tab-pane fade" id="reviewsTab">
+            @if (!Model.Omdomen.Any())
+            {
+                <div class="text-muted">Inga omdömen ännu.</div>
+            }
+            else
+            {
+                @foreach (var review in Model.Omdomen)
+                {
+                <div class="border-bottom py-2">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <strong>
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= review.Rating)
+                                    {
+                                        <i class="fa fa-star text-warning"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="fa fa-star text-secondary"></i>
+                                    }
+                                }
+                            </strong>
+                        </div>
+                        <small class="text-muted">@review.CreatedAt.ToString("yyyy-MM-dd")</small>
+                    </div>
+                    <div class="text-muted">@review.Text</div>
+                </div>
+                }
+            }
+        </div>
+    </div>
+</div>

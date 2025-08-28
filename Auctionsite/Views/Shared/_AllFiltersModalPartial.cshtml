@@ -1,0 +1,148 @@
+﻿@using Auctionsite
+@using Auctionsite.Models
+@using Auctionsite.Models.VM
+@{
+    // Explicitly cast ViewBag.SearchFilter to AdSearchFilterViewModel
+    var searchFilter = ViewBag.SearchFilter as AdSearchFilterViewModel;
+}
+
+<div class="modal fade" id="allFiltersModal" tabindex="-1" aria-labelledby="allFiltersModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="allFiltersModalLabel">Alla filter</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="all-filters-form" asp-action="Search" asp-controller="Advertisement" method="get">
+                    @* Preserve current search term and search type from main form *@
+                    @if (!string.IsNullOrEmpty(searchFilter?.SearchTerm))
+                    {
+                        <input type="hidden" name="SearchTerm" value="@(searchFilter?.SearchTerm)" />
+                    }
+                    @if (searchFilter?.SearchType != null)
+                    {
+                        <input type="hidden" name="SearchType" value="@(searchFilter?.SearchType.ToString())" />
+                    }
+
+                    @* Preserve current category if coming from category page *@
+                    @if (ViewBag.CategoryId != null)
+                    {
+                        <input type="hidden" name="categoryId" value="@ViewBag.CategoryId" />
+                    }
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <h6>Kategori</h6>
+                            <div class="form-check">
+                                <input class="form-check-input category-filter" type="radio" name="categoryId" value="" id="modal_filter_cat_all" @(searchFilter?.CategoryId == null ? "checked" : "")>
+                                <label class="form-check-label" for="modal_filter_cat_all">
+                                    <strong>Alla kategorier</strong>
+                                </label>
+                            </div>
+                            @if (ViewBag.GroupedCategories != null)
+                            {
+                                @foreach (var group in (List<CategoryGroupVM>)ViewBag.GroupedCategories)
+                                {
+                                    <hr class="my-2" />
+                                    <div class="form-check">
+                                        <input class="form-check-input category-filter" type="radio" name="categoryId" value="@group.GroupId" id="modal_filter_cat_parent_@group.GroupId" @(searchFilter?.CategoryId == group.GroupId ? "checked" : "")>
+                                        <label class="form-check-label" for="modal_filter_cat_parent_@group.GroupId">
+                                            <strong>@group.GroupName</strong>
+                                        </label>
+                                    </div>
+                                    @foreach (var item in group.SubCategories)
+                                    {
+                                        <div class="form-check ms-3">
+                                            <input class="form-check-input category-filter" type="radio" name="categoryId" value="@item.Value" id="modal_filter_cat_@item.Value" @(searchFilter?.CategoryId?.ToString() == item.Value ? "checked" : "")>
+                                            <label class="form-check-label" for="modal_filter_cat_@item.Value">@item.Text</label>
+                                        </div>
+                                    }
+                                }
+                            }
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <h6>Prisintervall</h6>
+                            <div class="d-flex align-items-center">
+                                <input type="number"
+                                       name="minPrice"
+                                       class="form-control"
+                                       placeholder="Min"
+                                       value="@(searchFilter?.MinPrice)">
+                                <span class="mx-2">-</span>
+                                <input type="number"
+                                       name="maxPrice"
+                                       class="form-control"
+                                       placeholder="Max"
+                                       value="@(searchFilter?.MaxPrice)">
+                            </div>
+
+                            <h6 class="mt-3">Annonsformat</h6>
+                            @{
+                                var currentAdType = searchFilter?.AdType?.ToString();
+                            }
+                            @foreach (var item in (List<SelectListItem>)ViewBag.AdTypeOptions)
+                            {
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="radio"
+                                           name="adType"
+                                           value="@item.Value"
+                                           id="modal_adType_@item.Value"
+                                    @(currentAdType == item.Value ? "checked" : "")>
+                                    <label class="form-check-label" for="modal_adType_@item.Value">@item.Text</label>
+                                </div>
+                            }
+
+                            <h6 class="mt-3">Skick</h6>
+                            @{
+                                var selectedConditions = searchFilter?.SelectedConditions?.Select(c => c.ToString()).ToList();
+                            }
+                            @foreach (var item in (List<SelectListItem>)ViewBag.ConditionOptions)
+                            {
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           name="selectedConditions"
+                                           value="@item.Value"
+                                           id="modal_cond_@item.Value"
+                                    @(selectedConditions != null && selectedConditions.Contains(item.Value) ? "checked" : "")>
+                                    <label class="form-check-label" for="modal_cond_@item.Value">@item.Text</label>
+                                </div>
+                            }
+
+                            <h6 class="mt-3">Säljare</h6>
+                            @{
+                                var currentSellerType = searchFilter?.SellerType.ToString();
+                            }
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       name="sellerType"
+                                       value="@SellerType.PrivateOnly"
+                                       id="modal_seller_private"
+                                @(currentSellerType == SellerType.PrivateOnly.ToString() ? "checked" : "")>
+                                <label class="form-check-label" for="modal_seller_private">Privat</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       name="sellerType"
+                                       value="@SellerType.CompanyOnly"
+                                       id="modal_seller_company"
+                                @(currentSellerType == SellerType.CompanyOnly.ToString() ? "checked" : "")>
+                                <label class="form-check-label" for="modal_seller_company">Företag</label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Stäng</button>
+                <button type="button" class="btn btn-primary" id="apply-all-filters">Tillämpa filter</button>
+            </div>
+        </div>
+    </div>
+</div>
+

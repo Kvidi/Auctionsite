@@ -1,0 +1,16 @@
+﻿@using Auctionsite
+@using Auctionsite.Models
+@using Auctionsite.Models.Database
+@model User
+
+@{
+    ViewData["Title"] = "Användardetaljer";
+}
+
+<h2>Användarinformation</h2>
+<ul>
+    <li>E-post: @Model.Email</li>
+    <li>Användarnamn: @Model.UserName</li>
+    <li>Telefonnummer: @Model.PhoneNumber</li>
+</ul>
+<a asp-action="AllUsers">Tillbaka till listan</a>

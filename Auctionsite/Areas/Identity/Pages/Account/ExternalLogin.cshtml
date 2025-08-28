@@ -1,0 +1,57 @@
+﻿@page
+@model ExternalLoginModel
+@{
+    ViewData["Title"] = "Registrera";
+}
+
+<h1>@ViewData["Title"]</h1>
+<h2 id="external-login-title">Koppla ihop ditt @Model.ProviderDisplayName-konto.</h2>
+<hr />
+
+<p id="external-login-description" class="text-bg-success">
+    Verifieringen med <strong>@Model.ProviderDisplayName</strong> lyckades.
+    Vänligen kontrollera att uppgifterna från <strong>@Model.ProviderDisplayName</strong> är korrekta.
+    Klicka sedan på "Registrera" för att slutföra registreringen och logga in.
+</p>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-page-handler="Confirmation" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Email" class="form-control" readonly />
+                <label asp-for="Input.Email" class="form-label"></label>
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.FirstName" class="form-control" autocomplete="given-name" placeholder="Var god ange ditt förnamn." />
+                <label asp-for="Input.FirstName" class="form-label"></label>
+                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.LastName" class="form-control" autocomplete="family-name" placeholder="Var god ange ditt efternamn." />
+                <label asp-for="Input.LastName" class="form-label"></label>
+                <span asp-validation-for="Input.LastName" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.PhoneNumber" class="form-control" autocomplete="tel" placeholder="Var god ange ditt telefonnummer (valfritt)." />
+                <label asp-for="Input.PhoneNumber" class="form-label"></label>
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Address" class="form-control" autocomplete="street-address" placeholder="Var god ange din adress (valfritt)." />
+                <label asp-for="Input.Address" class="form-label"></label>
+                <span asp-validation-for="Input.Address" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Dob" class="form-control" autocomplete="bday" placeholder="Vänligen ange ditt födelsedatum (sparas ej)." />
+                <label asp-for="Input.Dob" class="form-label"></label>
+                <span asp-validation-for="Input.Dob" class="text-danger"></span>
+            </div>
+            <button type="submit" class="w-100 btn btn-lg btn-primary">Registrera</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

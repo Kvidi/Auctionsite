@@ -1,0 +1,36 @@
+﻿@page
+@model DashboardModel
+@{
+    ViewData["Title"] = "Mina Sidor";
+}
+
+<div class="container py-4">
+    <h2 class="fw-bold mb-4">@ViewData["Title"]</h2>
+
+    <div class="row g-3">
+        @foreach (var item in Model.Cards)
+        {
+            <div class="col-12 col-md-4">
+                <a asp-area="Identity" asp-page="@item.PageLink" class="dashboard-card bg-light p-3 rounded d-flex flex-column gap-1 h-100 text-decoration-none text-dark">
+                    <i class="fa @item.Icon fa-lg text-dark mb-2"></i>
+                    <div class="fw-semibold">@item.Title</div>
+                    <small class="text-muted">Beskrivning här</small>
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .dashboard-card {
+        background: #f9f4f5;
+        transition: all 0.2s ease-in-out;
+        cursor: pointer;
+    }
+
+    .dashboard-card:hover {
+        background-color: #f1e6e9;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+</style>
