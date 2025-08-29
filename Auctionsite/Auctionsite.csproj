@@ -10,12 +10,16 @@
   <ItemGroup>
     <Compile Remove="ViewComponents\**" />
     <Compile Remove="ViewModels\**" />
+    <Compile Remove="wwwroot\Images\Demo\**" />
     <Content Remove="ViewComponents\**" />
     <Content Remove="ViewModels\**" />
+    <Content Remove="wwwroot\Images\Demo\**" />
     <EmbeddedResource Remove="ViewComponents\**" />
     <EmbeddedResource Remove="ViewModels\**" />
+    <EmbeddedResource Remove="wwwroot\Images\Demo\**" />
     <None Remove="ViewComponents\**" />
     <None Remove="ViewModels\**" />
+    <None Remove="wwwroot\Images\Demo\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -56,7 +60,6 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\Images\UserImages\" />
-    <Folder Include="wwwroot\Images\Demo\" />
   </ItemGroup>
 
   <ItemGroup>

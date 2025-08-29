@@ -13,10 +13,7 @@ namespace Auctionsite.Areas.Identity.Pages.Account.Manage
             {
                 new() { Title = "Mina annonser", Icon = "fa-star" , PageLink = "/Account/Manage/MinaAnnonser" },
                 new() { Title = "Sparade annonser", Icon = "fa-heart" , PageLink = "/Account/Manage/SparadeAnnonser" },
-                new() { Title = "Bevakningar", Icon = "fa-star" },
-                new() { Title = "Ordrar", Icon = "fa-star" },
-                new() { Title = "Mina anslag", Icon = "fa-star" },
-                new() { Title = "Sparade anslag", Icon = "fa-star" },
+                new() { Title = "Bevakningar", Icon = "fa-star" },                
                 new() { Title = "Inställningar", Icon = "fa-gear" , PageLink = "/Account/Manage/SettingsList" }
             };
         }

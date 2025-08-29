@@ -94,8 +94,6 @@ builder.Services.AddSignalR();
 
 var app = builder.Build();
 
-//// Peder's seed for users with roles
-//await Auctionsite.Data.Seed.TemporarySeedPrivateUsersForPeder.Seed(app);
 
 using (var scope = app.Services.CreateScope())
 {  
