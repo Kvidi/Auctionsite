@@ -72,49 +72,6 @@ namespace Auctionsite.Controllers
             }
         }
 
-        // Shows all placed orders made by a specific user
-        //public async Task<IActionResult> OrdersByUser(string id)
-        //{
-        //    if (string.IsNullOrWhiteSpace(id))
-        //    {
-        //        return BadRequest("User ID is required.");
-        //    }
-
-        //    try
-        //    {
-        //        var user = await _userManager.FindByIdAsync(id);
-        //        if (user == null)
-        //        {
-        //            return NotFound("Användaren hittades inte.");
-        //        }
-
-        //        var orders = await _orderService.GetOrdersByUserIdAsync(id);
-
-        //        ViewData["UserEmail"] = user.Email;
-
-        //        return View(orders);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"Error retrieving orders: {ex.Message}");
-        //    }
-        //}
-
-        // Shows all placed orders across all users
-        //public async Task<IActionResult> AllOrders()
-        //{
-        //    try
-        //    {
-        //        var orders = await _orderService.GetAllOrdersAsync();                
-        //        return View(orders);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"Error retrieving all orders: {ex.Message}");
-        //    }
-        //}
-
-
         // Shows all pending sales adds awaiting approval
         public async Task<IActionResult> ApprovePendingAds()
         {
